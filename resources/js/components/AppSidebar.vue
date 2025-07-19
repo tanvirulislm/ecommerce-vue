@@ -38,7 +38,7 @@ const products: NavItem[] = [
         </SidebarHeader>
 
         <SidebarContent>
-            <NavMain :items="mainNavItems" />
+            <NavMain :items="mainNavItems" title="" />
             <NavMain :items="products" title="Products" />
         </SidebarContent>
 
