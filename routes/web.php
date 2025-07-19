@@ -3,6 +3,8 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\ProductController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -18,4 +20,6 @@ require __DIR__ . '/auth.php';
 
 Route::middleware(['auth', 'verified',])->group(function () {
     Route::get('/category', [CategoryController::class, 'Categorypage'])->name('category');
+    Route::get('/brand', [BrandController::class, 'BrandPage'])->name('brand');
+    Route::get('/product', [ProductController::class, 'ProductPage'])->name('product');
 });

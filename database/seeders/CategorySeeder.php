@@ -15,31 +15,12 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        // $faker = Faker::create();
-        $parentCategories = [];
-        for ($i = 0; $i < 10; $i++) {
+        $categories = ['Electronics', 'Books', 'Fashion', 'Home & Kitchen', 'Sports', 'Beauty'];
 
-            $name = fake()->unique()->words(rand(1, 3), true);
-            $parentCategories[] = Category::create([
-                'name'        => ucfirst($name),
-                'slug'        => Str::slug($name),
-                'description' => fake()->boolean(70) ? fake()->sentence(15) : null,
-                'parent_id'   => null,
-            ]);
-        }
-
-
-        for ($i = 0; $i < 25; $i++) {
-            $name = fake()->unique()->words(rand(1, 3), true);
-
-
-            $parent = $parentCategories[array_rand($parentCategories)];
-
+        foreach ($categories as $name) {
             Category::create([
-                'name'        => ucfirst($name),
-                'slug'        => Str::slug($name),
-                'description' => fake()->boolean(70) ? fake()->sentence(15) : null,
-                'parent_id'   => $parent->id,
+                'name' => $name,
+                'slug' => Str::slug($name),
             ]);
         }
     }
