@@ -1,27 +1,26 @@
 <script setup lang="ts">
 import Heading from '@/components/Heading.vue';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import { Search, SquarePen, Trash } from 'lucide-vue-next';
 import { ref } from 'vue';
+import type { ClickRowArgument } from 'vue3-easy-data-table';
 const breadcrumbItems: BreadcrumbItem[] = [
     {
-        title: 'Brand',
-        href: '/brand',
+        title: 'Product',
+        href: '/product',
     },
 ];
 
-const props = defineProps({
+defineProps({
     product: Array,
 });
 
-const items = ref(props.product);
-
 const headers = [
-    { text: 'ID', value: 'id', sortable: true },
     { text: 'Product Name', value: 'title', sortable: true },
     { text: 'Image', value: 'image' },
     { text: 'Price', value: 'price', sortable: true },
@@ -32,8 +31,18 @@ const headers = [
     { text: 'Brand', value: 'brand.brandName', sortable: true },
     { text: 'Operation', value: 'operation' },
 ];
+
 const searchTerm = ref('');
-const searchFields = ['name'];
+const searchFields = ['title', 'category.name', 'brand.brandName', 'remark'];
+
+const isModalOpen = ref(false);
+const selectedItem = ref<ClickRowArgument | null>(null);
+
+// 3. Update the showRow function to open the modal
+const showRow = (item: ClickRowArgument) => {
+    selectedItem.value = item;
+    isModalOpen.value = true;
+};
 </script>
 
 <template>
@@ -55,21 +64,51 @@ const searchFields = ['name'];
             <!-- Easy Data Table -->
             <EasyDataTable
                 table-class-name="customize-table"
-                :headers="headers"
-                :items="product"
                 alternating
                 buttons-pagination
+                show-index
+                :headers="headers"
+                :items="product"
                 :search-value="searchTerm"
                 :search-fields="searchFields"
+                @click-row="showRow"
             >
                 <template #item-image="{ image }">
                     <img :src="image" alt="Product" class="ms-2 h-8 w-auto rounded-full" />
                 </template>
-                <template #item-operation="{ id }">
+                <template #item-operation="">
                     <Button size="sm" class="mr-2"><SquarePen class="h-4 w-4" /></Button>
                     <Button size="sm" variant="destructive"><Trash class="h-4 w-4" /></Button>
                 </template>
             </EasyDataTable>
+            <Dialog :open="isModalOpen" @update:open="isModalOpen = false">
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Product Details</DialogTitle>
+                        <DialogDescription>
+                            Detailed information about the <strong>{{ selectedItem?.title }}</strong
+                            >.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <div v-if="selectedItem" class="grid gap-4 py-4">
+                        <div class="flex items-center">
+                            <img :src="selectedItem.image" alt="Product" class="h-20 w-20 rounded-md object-cover" />
+                        </div>
+                        <p><strong>Product Name:</strong> {{ selectedItem.title }}</p>
+                        <p><strong>Product Price:</strong> $ {{ selectedItem.price }}</p>
+                        <p><strong>Available Stock:</strong> {{ selectedItem.stock }} units</p>
+                        <p><strong>Product Category:</strong> {{ selectedItem.category.name }}</p>
+                        <p><strong>Brand:</strong> {{ selectedItem.brand.brandName }}</p>
+                        <p><strong>Remark:</strong> {{ selectedItem.remark }}</p>
+                    </div>
+
+                    <DialogFooter>
+                        <Button>Show Details</Button>
+                        <Button @click="isModalOpen = false">Close</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     </AppLayout>
 </template>
@@ -78,5 +117,16 @@ const searchFields = ['name'];
 .customize-table {
     --easy-table-header-font-size: 15px;
     --easy-table-body-row-font-size: 14px;
+}
+
+::v-deep(.buttons-pagination .item.button.active) {
+    background-color: #2e2e2e !important;
+    border-color: #2e2e2e !important;
+    color: #ffffff !important;
+}
+::v-deep(.select-items .selected) {
+    background-color: #2e2e2e !important;
+    border-color: #2e2e2e !important;
+    color: #ffffff !important;
 }
 </style>

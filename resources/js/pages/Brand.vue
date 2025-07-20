@@ -14,11 +14,11 @@ const breadcrumbItems: BreadcrumbItem[] = [
     },
 ];
 
-const props = defineProps({
+defineProps({
     brand: Array,
 });
 
-const items = ref(props.brand);
+// const items = ref(props.brand);
 
 const headers = [
     { text: 'ID', value: 'id', sortable: true },
@@ -57,7 +57,7 @@ const searchFields = ['name'];
                 <template #item-brandImg="{ brandImg }">
                     <img :src="brandImg" alt="Brand" class="ms-2 h-8 w-auto rounded-full" />
                 </template>
-                <template #item-operation="{ id }">
+                <template #item-operation="">
                     <Button size="sm" class="mr-2"><SquarePen class="h-4 w-4" /></Button>
                     <Button size="sm" variant="destructive"><Trash class="h-4 w-4" /></Button>
                 </template>
@@ -70,5 +70,16 @@ const searchFields = ['name'];
 .customize-table {
     --easy-table-header-font-size: 15px;
     --easy-table-body-row-font-size: 14px;
+}
+
+::v-deep(.buttons-pagination .item.button.active) {
+    background-color: #2e2e2e !important;
+    border-color: #2e2e2e !important;
+    color: #ffffff !important;
+}
+::v-deep(.select-items .selected) {
+    background-color: #2e2e2e !important;
+    border-color: #2e2e2e !important;
+    color: #ffffff !important;
 }
 </style>
