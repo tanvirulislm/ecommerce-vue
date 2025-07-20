@@ -41,15 +41,17 @@ const searchFields = ['name'];
         <Head title="Product" />
         <div class="px-4 py-6">
             <Heading title="Product List" />
+
             <div class="flex justify-between">
                 <div class="relative mb-6 max-w-xs">
                     <Search class="absolute left-3 z-10 mt-[22px] h-4 w-4 -translate-y-1/2 text-gray-500" />
-                    <Input type="text" class="mt-1 block w-full pl-9" v-model="searchTerm" required placeholder="Search Category..." />
+                    <Input type="text" class="mt-1 block w-full pl-9" v-model="searchTerm" required placeholder="Search Product..." />
                 </div>
                 <div class="mb-2 flex justify-end">
                     <Button>Create Product</Button>
                 </div>
             </div>
+
             <!-- Easy Data Table -->
             <EasyDataTable
                 table-class-name="customize-table"
