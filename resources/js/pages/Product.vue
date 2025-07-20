@@ -38,7 +38,6 @@ const searchFields = ['title', 'category.name', 'brand.brandName', 'remark'];
 const isModalOpen = ref(false);
 const selectedItem = ref<ClickRowArgument | null>(null);
 
-// 3. Update the showRow function to open the modal
 const showRow = (item: ClickRowArgument) => {
     selectedItem.value = item;
     isModalOpen.value = true;
@@ -84,19 +83,20 @@ const showRow = (item: ClickRowArgument) => {
             <Dialog :open="isModalOpen" @update:open="isModalOpen = false">
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Product Details</DialogTitle>
-                        <DialogDescription>
-                            Detailed information about the <strong>{{ selectedItem?.title }}</strong
-                            >.
-                        </DialogDescription>
+                        <DialogTitle>{{ selectedItem?.title }}</DialogTitle>
+                        <DialogDescription> {{ selectedItem?.short_des }} </DialogDescription>
                     </DialogHeader>
 
                     <div v-if="selectedItem" class="grid gap-4 py-4">
                         <div class="flex items-center">
                             <img :src="selectedItem.image" alt="Product" class="h-20 w-20 rounded-md object-cover" />
                         </div>
-                        <p><strong>Product Name:</strong> {{ selectedItem.title }}</p>
                         <p><strong>Product Price:</strong> $ {{ selectedItem.price }}</p>
+                        <p><strong>Discount:</strong> $ {{ selectedItem.discount }}</p>
+                        <p>
+                            <strong>{{ selectedItem.variation_option?.variation?.name }}:</strong>
+                            {{ selectedItem.variation_option?.name }}
+                        </p>
                         <p><strong>Available Stock:</strong> {{ selectedItem.stock }} units</p>
                         <p><strong>Product Category:</strong> {{ selectedItem.category.name }}</p>
                         <p><strong>Brand:</strong> {{ selectedItem.brand.brandName }}</p>
@@ -104,7 +104,7 @@ const showRow = (item: ClickRowArgument) => {
                     </div>
 
                     <DialogFooter>
-                        <Button>Show Details</Button>
+                        <Button>Make Order</Button>
                         <Button @click="isModalOpen = false">Close</Button>
                     </DialogFooter>
                 </DialogContent>

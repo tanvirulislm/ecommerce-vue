@@ -16,8 +16,10 @@ class DatabaseSeeder extends Seeder
         $this->callOnce([
             CategorySeeder::class,
             BrandSeeder::class,
+            UserSeeder::class,
+            VariationSeeder::class,
+            VariationOptionSeeder::class,
             ProductSeeder::class,
-            UserSeeder::class
         ]);
     }
 }

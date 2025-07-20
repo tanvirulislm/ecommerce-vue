@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\VariationController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -22,4 +23,5 @@ Route::middleware(['auth', 'verified',])->group(function () {
     Route::get('/category', [CategoryController::class, 'Categorypage'])->name('category');
     Route::get('/brand', [BrandController::class, 'BrandPage'])->name('brand');
     Route::get('/product', [ProductController::class, 'ProductPage'])->name('product');
+    Route::get('/variation', [VariationController::class, 'VariationPage'])->name('variation');
 });

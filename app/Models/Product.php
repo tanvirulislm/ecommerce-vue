@@ -6,19 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    protected $fillable = [
-        'title',
-        'short_des',
-        'price',
-        'discount',
-        'discount_price',
-        'image',
-        'stock',
-        'star',
-        'remark',
-        'category_id',
-        'brand_id'
-    ];
+    protected $guarded = [];
 
     public function category()
     {
@@ -30,8 +18,8 @@ class Product extends Model
         return $this->belongsTo(Brand::class);
     }
 
-    public function details()
+    public function variationOption()
     {
-        return $this->hasMany(ProductDetails::class);
+        return $this->belongsTo(VariationOption::class);
     }
 }
