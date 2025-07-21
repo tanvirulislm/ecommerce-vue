@@ -9,8 +9,8 @@ import { Search, SquarePen, Trash } from 'lucide-vue-next';
 import { ref } from 'vue';
 const breadcrumbItems: BreadcrumbItem[] = [
     {
-        title: 'Brand',
-        href: '/brand',
+        title: 'Variation',
+        href: '/variation',
     },
 ];
 
@@ -22,25 +22,26 @@ defineProps({
 
 const headers = [
     { text: 'Variation Name', value: 'name', sortable: true },
-    { text: 'Variation Options', value: 'variation_options' },
+    { text: 'Variation Options', value: 'options' },
+    { text: 'Price', value: 'price' },
     { text: 'Operation', value: 'operation' },
 ];
 const searchTerm = ref('');
-const searchFields = ['name'];
+const searchFields = ['name', 'options'];
 </script>
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbItems">
-        <Head title="Brand" />
+        <Head title="Variation" />
         <div class="px-4 py-6">
-            <Heading title="Brand List" />
+            <Heading title="Variation List" />
             <div class="flex justify-between">
                 <div class="relative mb-6 max-w-xs">
                     <Search class="absolute left-3 z-10 mt-[22px] h-4 w-4 -translate-y-1/2 text-gray-500" />
-                    <Input type="text" class="mt-1 block w-full pl-9" v-model="searchTerm" required placeholder="Search Category..." />
+                    <Input type="text" class="mt-1 block w-full pl-9" v-model="searchTerm" required placeholder="Search variation..." />
                 </div>
                 <div class="mb-2 flex justify-end">
-                    <Button>Create Brand</Button>
+                    <Button>Create Variation</Button>
                 </div>
             </div>
             <!-- Easy Data Table -->

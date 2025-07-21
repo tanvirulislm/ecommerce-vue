@@ -25,7 +25,6 @@ const headers = [
     { text: 'Image', value: 'image' },
     { text: 'Price', value: 'price', sortable: true },
     { text: 'Stock', value: 'stock', sortable: true },
-    { text: 'Star', value: 'star', sortable: true },
     { text: 'Remark', value: 'remark', sortable: true },
     { text: 'Category', value: 'category.name', sortable: true },
     { text: 'Brand', value: 'brand.brandName', sortable: true },
@@ -84,7 +83,7 @@ const showRow = (item: ClickRowArgument) => {
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>{{ selectedItem?.title }}</DialogTitle>
-                        <DialogDescription> {{ selectedItem?.short_des }} </DialogDescription>
+                        <DialogDescription> {{ selectedItem?.long_des }} </DialogDescription>
                     </DialogHeader>
 
                     <div v-if="selectedItem" class="grid gap-4 py-4">
@@ -92,11 +91,18 @@ const showRow = (item: ClickRowArgument) => {
                             <img :src="selectedItem.image" alt="Product" class="h-20 w-20 rounded-md object-cover" />
                         </div>
                         <p><strong>Product Price:</strong> $ {{ selectedItem.price }}</p>
-                        <p><strong>Discount:</strong> $ {{ selectedItem.discount }}</p>
-                        <p v-for="(option, index) in selectedItem.variation_options" :key="index">
-                            <strong>{{ option.variation.name }}: {{ option.name }}</strong>
+                        <p><strong>Discount:</strong> $ {{ selectedItem.discount_price }}</p>
+                        <p v-for="(option, index) in selectedItem.variations" :key="index">
+                            <strong>{{ option.name }}: {{ option.options }}</strong>
                         </p>
                         <p><strong>Available Stock:</strong> {{ selectedItem.stock }} units</p>
+                        <img
+                            v-for="(option, index) in selectedItem.variations"
+                            :key="index"
+                            :src="option.image"
+                            alt="Variation Image"
+                            class="h-10 w-10 rounded-md object-cover"
+                        />
                         <p><strong>Product Category:</strong> {{ selectedItem.category.name }}</p>
                         <p><strong>Brand:</strong> {{ selectedItem.brand.brandName }}</p>
                         <p><strong>Remark:</strong> {{ selectedItem.remark }}</p>

@@ -18,10 +18,8 @@ class Product extends Model
         return $this->belongsTo(Brand::class);
     }
 
-    public function variationOptions()
+    public function variations()
     {
-        return $this->belongsToMany(VariationOption::class, 'product_variation_options')
-            ->withPivot('image')
-            ->with('variation');
+        return $this->hasMany(Variation::class);
     }
 }

@@ -11,7 +11,7 @@ class VariationController extends Controller
 {
     public function VariationPage()
     {
-        $variations = Variation::with('variation_options')->get();
+        $variations = Variation::all();
         return Inertia::render('Variation', [
             'variations' => $variations,
         ]);

@@ -8,8 +8,8 @@ class Variation extends Model
 {
     protected $guarded = [];
 
-    public function variation_options()
+    public function product()
     {
-        return $this->hasMany(VariationOption::class);
+        return $this->belongsTo(Product::class);
     }
 }

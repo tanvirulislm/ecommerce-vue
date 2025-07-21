@@ -14,6 +14,12 @@ return new class extends Migration
         Schema::create('variations', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('options')->nullable();
+            $table->string('image')->nullable();
+            $table->string('price')->nullable();
+            $table->integer('stock')->default(0);
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('id')->on('products')->restrictOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }
