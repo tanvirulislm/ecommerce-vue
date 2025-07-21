@@ -22,7 +22,6 @@ defineProps({
 // const items = ref(props.category);
 
 const headers = [
-    { text: 'ID', value: 'id', sortable: true },
     { text: 'Name', value: 'name', sortable: true },
     { text: 'Slug', value: 'slug' },
     { text: 'Operation', value: 'operation' },
@@ -50,6 +49,7 @@ const searchFields = ['name'];
                 table-class-name="customize-table"
                 :headers="headers"
                 :items="category"
+                show-index
                 alternating
                 buttons-pagination
                 :search-value="searchTerm"

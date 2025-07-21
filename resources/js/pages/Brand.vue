@@ -21,7 +21,6 @@ defineProps({
 // const items = ref(props.brand);
 
 const headers = [
-    { text: 'ID', value: 'id', sortable: true },
     { text: 'Brand Image', value: 'brandImg' },
     { text: 'Brand Name', value: 'brandName', sortable: true },
     { text: 'Operation', value: 'operation' },
@@ -50,6 +49,7 @@ const searchFields = ['name'];
                 :headers="headers"
                 :items="brand"
                 alternating
+                show-index
                 buttons-pagination
                 :search-value="searchTerm"
                 :search-fields="searchFields"

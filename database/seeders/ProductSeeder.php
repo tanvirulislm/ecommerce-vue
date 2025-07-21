@@ -16,7 +16,7 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        $remarks = ['popular', 'new', 'top', 'special', 'trending', 'regular'];
+        $remarks = ['Popular', 'New', 'Top', 'Special', 'Trending', 'Regular'];
 
         for ($i = 0; $i < 30; $i++) {
             $title = fake()->unique()->words(rand(2, 4), true);
@@ -35,7 +35,6 @@ class ProductSeeder extends Seeder
                 'image'          => 'https://placehold.co/300x300.png?text=' . urlencode($title),
                 'stock'          => $stock,
                 'remark'         => $remarks[array_rand($remarks)],
-                'variation_option_id'    => VariationOption::inRandomOrder()->first()->id,
                 'category_id'    => Category::inRandomOrder()->first()->id,
                 'brand_id'       => Brand::inRandomOrder()->first()->id,
             ]);

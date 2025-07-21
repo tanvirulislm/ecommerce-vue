@@ -22,11 +22,9 @@ return new class extends Migration
             $table->string('image');
             $table->json('images')->nullable();
             $table->string('stock');
-            $table->enum('remark', ['popular', 'new', 'top', 'special', 'trending', 'regular']);
+            $table->enum('remark', ['Popular', 'New', 'Top', 'Special', 'Trending', 'Regular']);
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('brand_id');
-            $table->unsignedBigInteger('variation_option_id')->nullable();
-            $table->foreign('variation_option_id')->references('id')->on('variation_options')->nullOnDelete()->cascadeOnUpdate();
             $table->foreign('category_id')->references('id')->on('categories')->restrictOnDelete()->cascadeOnUpdate();
             $table->foreign('brand_id')->references('id')->on('brands')->restrictOnDelete()->cascadeOnUpdate();
             $table->timestamps();
