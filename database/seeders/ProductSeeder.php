@@ -25,10 +25,10 @@ class ProductSeeder extends Seeder
             $discount = fake()->boolean(70) ? fake()->numberBetween(10, 40) : 0;
             $discount_price = $discount ? round($price - ($price * $discount / 100)) : $price;
 
-            Product::create([
+            $product = Product::create([
                 'title'          => ucfirst($title),
                 'short_des'      => fake()->sentence(12),
-                'long_des'       => fake()->paragraph(5),
+                'long_des'       => fake()->paragraph(2),
                 'price'          => $price,
                 'discount'       => $discount,
                 'discount_price' => $discount_price,
@@ -38,6 +38,8 @@ class ProductSeeder extends Seeder
                 'category_id'    => Category::inRandomOrder()->first()->id,
                 'brand_id'       => Brand::inRandomOrder()->first()->id,
             ]);
+            $variationOptions = VariationOption::inRandomOrder()->limit(rand(1, 3))->get();
+            $product->variationOptions()->attach($variationOptions);
         }
     }
 }

@@ -10,7 +10,7 @@ class ProductController extends Controller
 {
     public function ProductPage()
     {
-        $product = Product::with(['category', 'brand', 'variationOptions.variation'])
+        $product = Product::with(['category', 'brand', 'variationOptions'])
             ->get();
         return Inertia::render('Product', [
             'product' => $product,

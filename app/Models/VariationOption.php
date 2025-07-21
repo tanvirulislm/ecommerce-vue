@@ -15,7 +15,7 @@ class VariationOption extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'product_variation_option')
+        return $this->belongsToMany(Product::class, 'product_variation_options')
             ->withPivot('image');
     }
 }

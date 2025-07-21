@@ -93,8 +93,8 @@ const showRow = (item: ClickRowArgument) => {
                         </div>
                         <p><strong>Product Price:</strong> $ {{ selectedItem.price }}</p>
                         <p><strong>Discount:</strong> $ {{ selectedItem.discount }}</p>
-                        <p>
-                            <strong>{{ selectedItem.variation_options.name }}</strong>
+                        <p v-for="(option, index) in selectedItem.variation_options" :key="index">
+                            <strong>{{ option.variation.name }}: {{ option.name }}</strong>
                         </p>
                         <p><strong>Available Stock:</strong> {{ selectedItem.stock }} units</p>
                         <p><strong>Product Category:</strong> {{ selectedItem.category.name }}</p>
