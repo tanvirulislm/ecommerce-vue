@@ -4,7 +4,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { Award, GitCompareArrows, House, LayoutGrid, PackageSearch } from 'lucide-vue-next';
+import { Award, GitCompareArrows, House, LayoutGrid, PackageSearch, Users } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -34,6 +34,16 @@ const products: NavItem[] = [
         title: 'Variation',
         href: '/variation',
         icon: GitCompareArrows,
+    },
+    {
+        title: 'Customer',
+        href: '/customer',
+        icon: Users,
+    },
+    {
+        title: 'Supplier',
+        href: '/supplier',
+        icon: Users,
     },
 ];
 </script>

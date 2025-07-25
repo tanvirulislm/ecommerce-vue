@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('discount_price');
             $table->string('image');
             $table->json('images')->nullable();
-            $table->string('stock');
+            $table->string('stock')->default(0);
             $table->enum('remark', ['Popular', 'New', 'Top', 'Special', 'Trending', 'Regular']);
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('brand_id');
