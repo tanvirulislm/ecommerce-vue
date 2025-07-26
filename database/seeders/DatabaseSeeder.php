@@ -19,8 +19,9 @@ class DatabaseSeeder extends Seeder
             BrandSeeder::class,
             ProductSeeder::class,
             VariationSeeder::class,
-            CustomerSeeder::class,
-            SupplierSeeder::class,
+            PartySeeder::class,
+            InvoiceSeeder::class,
+            InvoiceItemSeeder::class,
         ]);
     }
 }

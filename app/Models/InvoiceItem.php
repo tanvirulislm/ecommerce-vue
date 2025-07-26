@@ -4,17 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Variation extends Model
+class InvoiceItem extends Model
 {
     protected $guarded = [];
+
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class);
+    }
 
     public function product()
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function invoice_items()
+    public function variation()
     {
-        return $this->hasMany(InvoiceItem::class);
+        return $this->belongsTo(Variation::class);
     }
 }

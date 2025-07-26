@@ -36,13 +36,13 @@ const products: NavItem[] = [
         icon: GitCompareArrows,
     },
     {
-        title: 'Customer',
-        href: '/customer',
+        title: 'Party',
+        href: '/party',
         icon: Users,
     },
     {
-        title: 'Supplier',
-        href: '/supplier',
+        title: 'Invoice',
+        href: '/invoice',
         icon: Users,
     },
 ];

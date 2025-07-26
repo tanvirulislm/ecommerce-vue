@@ -15,13 +15,14 @@ const breadcrumbItems: BreadcrumbItem[] = [
 ];
 
 defineProps({
-    customers: Array,
+    parties: Array,
 });
 
 // const items = ref(props.brand);
 
 const headers = [
     { text: 'Name', value: 'name', sortable: true },
+    { text: 'Party Type', value: 'type', sortable: true },
     { text: 'Phone', value: 'phone', sortable: true },
     { text: 'Email', value: 'email', sortable: true },
     { text: 'City', value: 'city', sortable: true },
@@ -33,29 +34,36 @@ const searchFields = ['name', 'phone', 'email', 'city'];
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbItems">
-        <Head title="Customer" />
+        <Head title="Party" />
         <div class="px-4 py-6">
-            <Heading title="Customers List" />
+            <Heading title="Party List" />
             <div class="flex justify-between">
                 <div class="relative mb-6 max-w-xs">
                     <Search class="absolute left-3 z-10 mt-[22px] h-4 w-4 -translate-y-1/2 text-gray-500" />
-                    <Input type="text" class="mt-1 block w-full pl-9" v-model="searchTerm" required placeholder="Search Customer..." />
+                    <Input type="text" class="mt-1 block w-full pl-9" v-model="searchTerm" required placeholder="Search Party..." />
                 </div>
                 <div class="mb-2 flex justify-end">
-                    <Button>Create Customer</Button>
+                    <Button>Create Party</Button>
                 </div>
             </div>
             <!-- Easy Data Table -->
             <EasyDataTable
                 table-class-name="customize-table"
                 :headers="headers"
-                :items="customers"
+                :items="parties"
                 alternating
                 show-index
                 buttons-pagination
                 :search-value="searchTerm"
                 :search-fields="searchFields"
             >
+                <template #item-type="{ type }">
+                    <span
+                        class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold text-foreground transition-colors focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
+                        >{{ type.charAt(0).toUpperCase() + type.slice(1) }}</span
+                    >
+                </template>
+
                 <template #item-operation="">
                     <Button size="sm" class="mr-2"><SquarePen class="h-4 w-4" /></Button>
                     <Button size="sm" variant="destructive"><Trash class="h-4 w-4" /></Button>

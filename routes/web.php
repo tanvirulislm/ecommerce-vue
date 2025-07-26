@@ -6,8 +6,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\VariationController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\PartyController;
+use App\Http\Controllers\InvoiceController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -26,6 +26,6 @@ Route::middleware(['auth', 'verified',])->group(function () {
     Route::get('/brand', [BrandController::class, 'BrandPage'])->name('brand');
     Route::get('/product', [ProductController::class, 'ProductPage'])->name('product');
     Route::get('/variation', [VariationController::class, 'VariationPage'])->name('variation');
-    Route::get('/customer', [CustomerController::class, 'CustomerPage'])->name('customer');
-    Route::get('/supplier', [SupplierController::class, 'SupplierPage'])->name('supplier');
+    Route::get('/party', [PartyController::class, 'PartyPage'])->name('party')->name('party');
+    Route::get('/invoice', [InvoiceController::class, 'InvoicePage'])->name('invoice');
 });
