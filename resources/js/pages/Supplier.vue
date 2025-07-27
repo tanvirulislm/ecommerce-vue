@@ -9,24 +9,20 @@ import { Search, SquarePen, Trash } from 'lucide-vue-next';
 import { ref } from 'vue';
 const breadcrumbItems: BreadcrumbItem[] = [
     {
-        title: 'Invoice',
-        href: '/incoice',
+        title: 'Supplier',
+        href: '/supplier',
     },
 ];
 
 defineProps({
-    invoices: Array,
+    parties: Array,
 });
 
-// const item = ref(props.brand);
-
 const headers = [
-    { text: 'Name', value: 'party.name', sortable: true },
-    { text: 'Invoice Type', value: 'type', sortable: true },
-    { text: 'Payment Status', value: 'payment_status', sortable: true },
-    { text: 'City', value: 'party.city', sortable: true },
-    { text: 'Phone', value: 'party.phone', sortable: true },
-    { text: 'Email', value: 'party.email', sortable: true },
+    { text: 'Name', value: 'name', sortable: true },
+    { text: 'Phone', value: 'phone', sortable: true },
+    { text: 'Email', value: 'email', sortable: true },
+    { text: 'City', value: 'city', sortable: true },
     { text: 'Operation', value: 'operation' },
 ];
 const searchTerm = ref('');
@@ -35,23 +31,23 @@ const searchFields = ['name', 'phone', 'email', 'city'];
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbItems">
-        <Head title="Invoice" />
+        <Head title="Supplier" />
         <div class="px-4 py-6">
-            <Heading title="Invoice List" />
+            <Heading title="Supplier List" />
             <div class="flex justify-between">
                 <div class="relative mb-6 max-w-xs">
                     <Search class="absolute left-3 z-10 mt-[22px] h-4 w-4 -translate-y-1/2 text-gray-500" />
-                    <Input type="text" class="mt-1 block w-full pl-9" v-model="searchTerm" required placeholder="Search Invoice..." />
+                    <Input type="text" class="mt-1 block w-full pl-9" v-model="searchTerm" required placeholder="Search Supplier..." />
                 </div>
                 <div class="mb-2 flex justify-end">
-                    <Button>Create Invoice</Button>
+                    <Button>Create Supplier</Button>
                 </div>
             </div>
             <!-- Easy Data Table -->
             <EasyDataTable
                 table-class-name="customize-table"
                 :headers="headers"
-                :items="invoices"
+                :items="parties"
                 alternating
                 show-index
                 buttons-pagination
@@ -64,6 +60,7 @@ const searchFields = ['name', 'phone', 'email', 'city'];
                         >{{ type.charAt(0).toUpperCase() + type.slice(1) }}</span
                     >
                 </template>
+
                 <template #item-operation="">
                     <Button size="sm" class="mr-2"><SquarePen class="h-4 w-4" /></Button>
                     <Button size="sm" variant="destructive"><Trash class="h-4 w-4" /></Button>

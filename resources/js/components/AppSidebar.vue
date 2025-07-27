@@ -4,7 +4,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { Award, GitCompareArrows, House, LayoutGrid, PackageSearch, Users } from 'lucide-vue-next';
+import { Award, GitCompareArrows, House, LayoutGrid, PackageSearch, ScrollText, Users } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -14,7 +14,36 @@ const mainNavItems: NavItem[] = [
         icon: House,
     },
 ];
+const customer: NavItem[] = [
+    {
+        title: 'Customer',
+        href: '/customer',
+        icon: Users,
+    },
+    {
+        title: 'Sales Invoice',
+        href: '/sales-invoice',
+        icon: ScrollText,
+    },
+];
+const supplier: NavItem[] = [
+    {
+        title: 'Supplier',
+        href: '/supplier',
+        icon: Users,
+    },
+    {
+        title: 'Purchase Invoice',
+        href: '/purchase-invoice',
+        icon: ScrollText,
+    },
+];
 const products: NavItem[] = [
+    {
+        title: 'Product',
+        href: '/product',
+        icon: PackageSearch,
+    },
     {
         title: 'Category',
         href: '/category',
@@ -26,24 +55,9 @@ const products: NavItem[] = [
         icon: Award,
     },
     {
-        title: 'Product',
-        href: '/product',
-        icon: PackageSearch,
-    },
-    {
         title: 'Variation',
         href: '/variation',
         icon: GitCompareArrows,
-    },
-    {
-        title: 'Party',
-        href: '/party',
-        icon: Users,
-    },
-    {
-        title: 'Invoice',
-        href: '/invoice',
-        icon: Users,
     },
 ];
 </script>
@@ -65,6 +79,8 @@ const products: NavItem[] = [
         <SidebarContent>
             <NavMain :items="mainNavItems" title="" />
             <NavMain :items="products" title="Products" />
+            <NavMain :items="customer" title="Customers" />
+            <NavMain :items="supplier" title="Suppliers" />
         </SidebarContent>
 
         <SidebarFooter>

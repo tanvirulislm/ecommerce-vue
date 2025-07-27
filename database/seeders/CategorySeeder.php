@@ -20,7 +20,7 @@ class CategorySeeder extends Seeder
         foreach ($categories as $name) {
             Category::create([
                 'name' => $name,
-                'slug' => Str::slug($name),
+                'image' => 'https://placehold.co/150x150.png',
             ]);
         }
     }

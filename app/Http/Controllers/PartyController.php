@@ -8,10 +8,17 @@ use Illuminate\Http\Request;
 
 class PartyController extends Controller
 {
-    public function PartyPage()
+    public function CustomerPage()
     {
-        $parties = Party::all();
-        return Inertia::render('Party', [
+        $parties = Party::where('type', 'customer')->get();
+        return Inertia::render('Customer', [
+            'parties' => $parties,
+        ]);
+    }
+    public function SupplierPage()
+    {
+        $parties = Party::where('type', 'supplier')->get();
+        return Inertia::render('Supplier', [
             'parties' => $parties,
         ]);
     }

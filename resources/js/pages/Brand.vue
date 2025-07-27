@@ -18,11 +18,9 @@ defineProps({
     brand: Array,
 });
 
-// const items = ref(props.brand);
-
 const headers = [
-    { text: 'Brand Image', value: 'brandImg' },
-    { text: 'Brand Name', value: 'brandName', sortable: true },
+    { text: 'Brand Image', value: 'image' },
+    { text: 'Brand Name', value: 'name', sortable: true },
     { text: 'Operation', value: 'operation' },
 ];
 const searchTerm = ref('');
@@ -54,8 +52,8 @@ const searchFields = ['name'];
                 :search-value="searchTerm"
                 :search-fields="searchFields"
             >
-                <template #item-brandImg="{ brandImg }">
-                    <img :src="brandImg" alt="Brand" class="ms-2 h-8 w-auto rounded-full" />
+                <template #item-image="{ image }">
+                    <img :src="image" alt="Brand" class="ms-2 h-8 w-auto rounded-full" />
                 </template>
                 <template #item-operation="">
                     <Button size="sm" class="mr-2"><SquarePen class="h-4 w-4" /></Button>

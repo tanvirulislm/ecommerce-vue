@@ -1,14 +1,13 @@
 <script setup lang="ts">
+import ProductDetailDialog from '@/components/app/ProductDetailDialog.vue';
 import Heading from '@/components/Heading.vue';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import { Search, SquarePen, Trash } from 'lucide-vue-next';
 import { ref } from 'vue';
-import type { ClickRowArgument } from 'vue3-easy-data-table';
 const breadcrumbItems: BreadcrumbItem[] = [
     {
         title: 'Product',
@@ -27,20 +26,20 @@ const headers = [
     { text: 'Stock', value: 'stock', sortable: true },
     { text: 'Remark', value: 'remark', sortable: true },
     { text: 'Category', value: 'category.name', sortable: true },
-    { text: 'Brand', value: 'brand.brandName', sortable: true },
+    { text: 'Brand', value: 'brand.name', sortable: true },
     { text: 'Operation', value: 'operation' },
 ];
 
 const searchTerm = ref('');
-const searchFields = ['title', 'category.name', 'brand.brandName', 'remark'];
+const searchFields = ['title', 'category.name', 'brand.name', 'remark'];
 
-const isModalOpen = ref(false);
-const selectedItem = ref<ClickRowArgument | null>(null);
-
-const showRow = (item: ClickRowArgument) => {
+const showRow = (item: any) => {
     selectedItem.value = item;
     isModalOpen.value = true;
 };
+
+const isModalOpen = ref(false);
+const selectedItem = ref<any | null>(null);
 </script>
 
 <template>
@@ -79,7 +78,7 @@ const showRow = (item: ClickRowArgument) => {
                     <Button size="sm" variant="destructive"><Trash class="h-4 w-4" /></Button>
                 </template>
             </EasyDataTable>
-            <Dialog :open="isModalOpen" @update:open="isModalOpen = false">
+            <!-- <Dialog :open="isModalOpen" @update:open="isModalOpen = false">
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>{{ selectedItem?.title }}</DialogTitle>
@@ -93,7 +92,7 @@ const showRow = (item: ClickRowArgument) => {
                         <p><strong>Product Price:</strong> $ {{ selectedItem.price }}</p>
                         <p><strong>Discount:</strong> $ {{ selectedItem.discount_price }}</p>
                         <p v-for="(option, index) in selectedItem.variations" :key="index">
-                            <strong>{{ option.name }}: {{ option.options }}</strong>
+                            <strong>{{ option.name }}: {{ option.option }}</strong>
                         </p>
                         <p><strong>Available Stock:</strong> {{ selectedItem.stock }} units</p>
                         <img
@@ -113,7 +112,11 @@ const showRow = (item: ClickRowArgument) => {
                         <Button @click="isModalOpen = false">Close</Button>
                     </DialogFooter>
                 </DialogContent>
-            </Dialog>
+            </Dialog> -->
+
+            <template>
+                <ProductDetailDialog v-model:open="isModalOpen" :item="selectedItem" />
+            </template>
         </div>
     </AppLayout>
 </template>

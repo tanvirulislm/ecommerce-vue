@@ -16,27 +16,30 @@ class VariationSeeder extends Seeder
     {
         $variationNames = ['Size', 'Color', 'Weight', 'Type'];
         $optionsMap = [
-            'Size' => ['Small', 'Medium', 'Large'],
-            'Color' => ['Red', 'Green', 'Blue', 'Black'],
+            'Size'   => ['Small', 'Medium', 'Large'],
+            'Color'  => ['Red', 'Green', 'Blue', 'Black'],
             'Weight' => ['250g', '500g', '1kg'],
-            'Type' => ['Basic', 'Premium', 'Limited'],
+            'Type'   => ['Basic', 'Premium', 'Limited'],
         ];
 
         $products = Product::all();
 
         foreach ($products as $product) {
-            $count = rand(1, 2);
-            $pickedNames = collect($variationNames)->random($count);
+            $pickedNames = collect($variationNames)->random(rand(1, 2));
 
             foreach ($pickedNames as $name) {
-                Variation::create([
-                    'name'       => $name,
-                    'options'    => json_encode(collect($optionsMap[$name])->random(rand(1, 3))),
-                    'image'      => 'https://placehold.co/100x100?text=' . $name,
-                    'price'      => rand(50, 300),
-                    'stock'      => rand(10, 50),
-                    'product_id' => $product->id,
-                ]);
+                $options = $optionsMap[$name];
+
+                foreach ($options as $option) {
+                    Variation::create([
+                        'name'       => $name,
+                        'option'     => $option,
+                        'image'      => 'https://placehold.co/100x100?text=' . $option,
+                        'price'      => rand(50, 300),
+                        'stock'      => rand(10, 50),
+                        'product_id' => $product->id,
+                    ]);
+                }
             }
         }
     }

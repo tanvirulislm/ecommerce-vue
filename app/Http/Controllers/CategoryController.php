@@ -14,6 +14,17 @@ class CategoryController extends Controller
         return Inertia::render('Category', [
             'category' => $category
         ]);
-        // return $category;
+    }
+
+    public function CreateCategory(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'parent_id' => 'nullable|exists:categories,id'
+        ]);
+
+        Category::create($request->all());
+
+        return redirect()->back()->with('success', 'Category created successfully.');
     }
 }

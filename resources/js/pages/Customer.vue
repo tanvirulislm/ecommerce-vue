@@ -22,7 +22,6 @@ defineProps({
 
 const headers = [
     { text: 'Name', value: 'name', sortable: true },
-    { text: 'Party Type', value: 'type', sortable: true },
     { text: 'Phone', value: 'phone', sortable: true },
     { text: 'Email', value: 'email', sortable: true },
     { text: 'City', value: 'city', sortable: true },
@@ -34,16 +33,16 @@ const searchFields = ['name', 'phone', 'email', 'city'];
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbItems">
-        <Head title="Party" />
+        <Head title="Customer" />
         <div class="px-4 py-6">
-            <Heading title="Party List" />
+            <Heading title="Customer List" />
             <div class="flex justify-between">
                 <div class="relative mb-6 max-w-xs">
                     <Search class="absolute left-3 z-10 mt-[22px] h-4 w-4 -translate-y-1/2 text-gray-500" />
-                    <Input type="text" class="mt-1 block w-full pl-9" v-model="searchTerm" required placeholder="Search Party..." />
+                    <Input type="text" class="mt-1 block w-full pl-9" v-model="searchTerm" required placeholder="Search Customer..." />
                 </div>
                 <div class="mb-2 flex justify-end">
-                    <Button>Create Party</Button>
+                    <Button>Create Customer</Button>
                 </div>
             </div>
             <!-- Easy Data Table -->

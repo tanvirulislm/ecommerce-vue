@@ -28,8 +28,8 @@ class BrandSeeder extends Seeder
 
         foreach ($brands as $brand) {
             Brand::create([
-                'brandName' => $brand['name'],
-                'brandImg'  => $brand['img'],
+                'name' => $brand['name'],
+                'image'  => $brand['img'],
             ]);
         }
     }

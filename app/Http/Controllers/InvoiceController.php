@@ -8,10 +8,21 @@ use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
 {
-    public function InvoicePage()
+    public function SalesInvoicePage()
     {
-        $invoices = Invoice::with('party')->get();
-        return Inertia::render('Invoice', [
+        $invoices = Invoice::whereHas('party', function ($query) {
+            $query->where('type', 'customer');
+        })->with('party')->get();
+        return Inertia::render('SalesInvoice', [
+            'invoices' => $invoices,
+        ]);
+    }
+    public function PurchaseInvoicePage()
+    {
+        $invoices = Invoice::whereHas('party', function ($query) {
+            $query->where('type', 'supplier');
+        })->with('party')->get();
+        return Inertia::render('PurchaseInvoice', [
             'invoices' => $invoices,
         ]);
     }
