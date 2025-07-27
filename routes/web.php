@@ -32,4 +32,7 @@ Route::middleware(['auth', 'verified',])->group(function () {
     Route::get('/supplier', [PartyController::class, 'SupplierPage'])->name('supplier');
     Route::get('/sales-invoice', [InvoiceController::class, 'SalesInvoicePage'])->name('sales-invoice');
     Route::get('/purchase-invoice', [InvoiceController::class, 'PurchaseInvoicePage'])->name('purchase-invoice');
+
+    // All POST URLs
+    Route::post('/category', [CategoryController::class, 'CreateCategory'])->name('create-category');
 });

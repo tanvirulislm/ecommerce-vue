@@ -10,9 +10,9 @@ class CategoryController extends Controller
 {
     public function Categorypage()
     {
-        $category = Category::All();
+        $categories = Category::All();
         return Inertia::render('Category', [
-            'category' => $category
+            'categories' => $categories
         ]);
     }
 
@@ -20,10 +20,24 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'image' => 'nullable|image|max:2048',
             'parent_id' => 'nullable|exists:categories,id'
         ]);
 
-        Category::create($request->all());
+        $image = null;
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('uploads/categories'), $imageName);
+            $image = 'uploads/categories/' . $imageName;
+        }
+
+        Category::create([
+            'name' => $request->input('name'),
+            'image' => $image,
+            'parent_id' => $request->input('parent_id')
+        ]);
 
         return redirect()->back()->with('success', 'Category created successfully.');
     }

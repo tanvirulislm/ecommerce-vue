@@ -3,11 +3,12 @@ import Heading from '@/components/Heading.vue';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { Search, SquarePen, Trash } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 const breadcrumbItems: BreadcrumbItem[] = [
     {
         title: 'Category',
@@ -16,7 +17,7 @@ const breadcrumbItems: BreadcrumbItem[] = [
 ];
 
 defineProps({
-    category: Array,
+    categories: Array,
 });
 
 const headers = [
@@ -28,6 +29,28 @@ const searchTerm = ref('');
 const searchFields = ['name'];
 
 const isModalOpen = ref(false);
+const selectedParentId = ref(null);
+
+const form = useForm({
+    name: '',
+    image: null,
+    parent_id: null,
+});
+const submit = () => {
+    form.post(route('create-category'), {
+        onFinish: () => {
+            form.reset();
+            isModalOpen.value = false;
+        },
+    });
+};
+const handleFile = (e: Event) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    form.image = file;
+};
+watch(selectedParentId, (val) => {
+    form.parent_id = val;
+});
 </script>
 
 <template>
@@ -48,7 +71,7 @@ const isModalOpen = ref(false);
             <EasyDataTable
                 table-class-name="customize-table"
                 :headers="headers"
-                :items="category"
+                :items="categories"
                 show-index
                 alternating
                 buttons-pagination
@@ -69,16 +92,27 @@ const isModalOpen = ref(false);
                     <DialogHeader>
                         <DialogTitle>Create Categogy</DialogTitle>
                     </DialogHeader>
+                    <form @submit.prevent="submit" class="flex flex-col gap-6">
+                        <div class="grid gap-6">
+                            <Input type="text" v-model="form.name" placeholder="Category Name" />
+                            <Input type="file" @change="handleFile" placeholder="Category Image" />
 
-                    <div class="grid gap-6">
-                        <Input type="text" placeholder="Category Name" />
-                        <Input type="text" placeholder="Category Slug" />
-                        <Input type="text" placeholder="Category Description" />
-                    </div>
-                    <DialogFooter>
-                        <Button>Save</Button>
-                        <Button @click="isModalOpen = false">Close</Button>
-                    </DialogFooter>
+                            <Select v-model="selectedParentId">
+                                <SelectTrigger class="w-full">
+                                    <SelectValue placeholder="Select Parent Category" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem :value="null">No Parent (Root Category)</SelectItem>
+                                    <SelectItem v-for="category in categories" :key="category.id" :value="category.id">
+                                        {{ category.name }}
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <DialogFooter>
+                            <Button type="submit">Save</Button>
+                        </DialogFooter>
+                    </form>
                 </DialogContent>
             </Dialog>
         </div>
