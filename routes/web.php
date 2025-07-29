@@ -37,6 +37,10 @@ Route::middleware(['auth', 'verified',])->group(function () {
     Route::post('/category', [CategoryController::class, 'CreateCategory'])->name('create-category');
     Route::post('/update-category/{id}', [CategoryController::class, 'UpdateCategory'])->name('update-category');
 
+    Route::post('/brand', [BrandController::class, 'CreateBrand'])->name('create-brand');
+    Route::post('/update-brand/{id}', [BrandController::class, 'UpdateBrand'])->name('update-brand');
+
     // All DELETE URLs
     Route::delete('/delete-category/{id}', [CategoryController::class, 'DeleteCategory'])->name('delete-category');
+    Route::delete('/delete-brand/{id}', [BrandController::class, 'DeleteBrand'])->name('delete-brand');
 });

@@ -10,7 +10,6 @@ class CategoryController extends Controller
 {
     public function Categorypage()
     {
-        // $categories = Category::All();
         $categories = Category::with('parent')->get()->map(function ($category) {
             if ($category->parent) {
                 $category->name = $category->parent->name . ' > ' . $category->name;

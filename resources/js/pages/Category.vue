@@ -251,7 +251,7 @@ function updateCategory() {
     </AppLayout>
 </template>
 
-<style scoped>
+<style>
 .customize-table {
     --easy-table-header-font-size: 15px;
     --easy-table-body-row-font-size: 14px;
