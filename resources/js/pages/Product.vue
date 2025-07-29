@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import { Search, SquarePen, Trash } from 'lucide-vue-next';
+import { Eye, Search, SquarePen, Trash } from 'lucide-vue-next';
 import { ref } from 'vue';
 const breadcrumbItems: BreadcrumbItem[] = [
     {
@@ -68,14 +68,16 @@ const selectedItem = ref<any | null>(null);
                 :items="product"
                 :search-value="searchTerm"
                 :search-fields="searchFields"
-                @click-row="showRow"
             >
                 <template #item-image="{ image }">
                     <img :src="image" alt="Product" class="ms-2 h-8 w-auto rounded-full" />
                 </template>
-                <template #item-operation="">
-                    <Button size="sm" class="mr-2"><SquarePen class="h-4 w-4" /></Button>
-                    <Button size="sm" variant="destructive"><Trash class="h-4 w-4" /></Button>
+                <template #item-operation="item">
+                    <div class="flex items-center gap-2">
+                        <Button size="sm" @click="showRow(item)" class="mr-2"><Eye class="h-4 w-4" /></Button>
+                        <Button size="sm" class="mr-2"><SquarePen class="h-4 w-4" /></Button>
+                        <Button size="sm" variant="destructive"><Trash class="h-4 w-4" /></Button>
+                    </div>
                 </template>
             </EasyDataTable>
             <!-- <Dialog :open="isModalOpen" @update:open="isModalOpen = false">
