@@ -20,6 +20,8 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { Search, SquarePen, Trash } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
+
+// Breadcrumb items for navigation
 const breadcrumbItems: BreadcrumbItem[] = [
     {
         title: 'Category',
@@ -27,18 +29,27 @@ const breadcrumbItems: BreadcrumbItem[] = [
     },
 ];
 
+// Props for the component
 defineProps({
     categories: Array,
 });
 
+// Reactive variables for success alert
+const showSuccessAlert = ref(false);
+const successAlertMessage = ref('');
+
+// For data table
 const headers = [
     { text: 'Image', value: 'image' },
     { text: 'Name', value: 'name', sortable: true },
     { text: 'Operation', value: 'operation' },
 ];
+
+// Reactive variables for search functionality
 const searchTerm = ref('');
 const searchFields = ['name'];
 
+// Reactive variables for modal and form handling
 const isModalOpen = ref(false);
 const selectedParentId = ref(null);
 
@@ -47,6 +58,7 @@ const form = useForm({
     image: null,
     parent_id: null,
 });
+
 const submit = () => {
     form.post(route('create-category'), {
         onSuccess: () => {
@@ -63,18 +75,19 @@ const submit = () => {
         },
     });
 };
+
 const handleFile = (e: Event) => {
     const file = (e.target as HTMLInputElement).files?.[0];
     form.image = file;
 };
+
 watch(selectedParentId, (val) => {
     form.parent_id = val;
 });
 
+// Reactive variables for delete dialog and success alert
 const isDeleteDialogOpen = ref(false);
 const categoryToDeleteId = ref(null);
-const showSuccessAlert = ref(false);
-const successAlertMessage = ref('');
 
 function openDeleteDialog(id) {
     categoryToDeleteId.value = id;
@@ -103,11 +116,44 @@ function handleDelete() {
         },
     });
 }
+
+// Edit functionality
+const isEditMode = ref(false);
+const editingId = ref(null);
+function editCategory(item) {
+    isEditMode.value = true;
+    isModalOpen.value = true;
+    editingId.value = item.id;
+
+    form.name = item.name;
+    form.image = null;
+    selectedParentId.value = item.parent_id;
+}
+function updateCategory() {
+    form.parent_id = selectedParentId.value;
+
+    form.post(`/update-category/${editingId.value}`, {
+        forceFormData: true,
+        onSuccess: () => {
+            successAlertMessage.value = 'Category Updated successfully!';
+            showSuccessAlert.value = true;
+
+            setTimeout(() => {
+                showSuccessAlert.value = false;
+            }, 3000);
+            isModalOpen.value = false;
+            isEditMode.value = false;
+            form.reset();
+        },
+    });
+}
 </script>
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbItems">
         <Head title="Category" />
+
+        <!-- Success Alert -->
         <div v-if="showSuccessAlert" class="fixed top-5 right-5 z-50 w-auto max-w-sm">
             <Alert>
                 <SquareCheckBig class="h-4 w-4" />
@@ -117,6 +163,8 @@ function handleDelete() {
                 </AlertDescription>
             </Alert>
         </div>
+
+        <!-- Main Content -->
         <div class="px-4 py-6">
             <Heading title="Category List" />
             <div class="flex justify-between">
@@ -128,6 +176,7 @@ function handleDelete() {
                     <Button @click="isModalOpen = true">Create Category</Button>
                 </div>
             </div>
+
             <!-- Easy Data Table -->
             <EasyDataTable
                 table-class-name="customize-table"
@@ -144,7 +193,9 @@ function handleDelete() {
                 </template>
                 <template #item-operation="item">
                     <div class="flex items-center gap-2">
-                        <Button size="sm" class="mr-2"><SquarePen class="h-4 w-4" /></Button>
+                        <Button size="sm" class="mr-2" @click="editCategory(item)">
+                            <SquarePen class="h-4 w-4" />
+                        </Button>
                         <Button size="sm" @click="openDeleteDialog(item.id)" variant="destructive"><Trash class="h-4 w-4" /></Button>
                     </div>
                 </template>
@@ -156,7 +207,7 @@ function handleDelete() {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete this category and any associated data.
+                            This will permanently delete the category and all of its data. This action cannot be undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -166,13 +217,14 @@ function handleDelete() {
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
+
             <!-- Create Category Modal -->
             <Dialog :open="isModalOpen" @update:open="isModalOpen = false">
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Create Categogy</DialogTitle>
+                        <DialogTitle>{{ isEditMode ? 'Update Category' : 'Create Category' }}</DialogTitle>
                     </DialogHeader>
-                    <form @submit.prevent="submit" class="flex flex-col gap-6">
+                    <form @submit.prevent="isEditMode ? updateCategory() : submit()" class="flex flex-col gap-6">
                         <div class="grid gap-6">
                             <Input type="text" v-model="form.name" placeholder="Category Name" />
                             <Input type="file" @change="handleFile" placeholder="Category Image" />
@@ -190,7 +242,7 @@ function handleDelete() {
                             </Select>
                         </div>
                         <DialogFooter>
-                            <Button type="submit">Save</Button>
+                            <Button type="submit">{{ isEditMode ? 'Update' : 'Save' }}</Button>
                         </DialogFooter>
                     </form>
                 </DialogContent>

@@ -54,8 +54,40 @@ class CategoryController extends Controller
         if ($category->image && file_exists(public_path($category->image))) {
             @unlink(public_path($category->image));
         }
-        // dd($category);
+
         $category->delete();
         return redirect()->back()->with('success', 'Category deleted successfully.');
+    }
+
+    public function UpdateCategory(Request $request, $id)
+    {
+        $category = Category::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'image' => 'nullable|image|max:2048',
+            'parent_id' => 'nullable|exists:categories,id'
+        ]);
+
+        $imagePath = $category->image;
+
+        if ($request->hasFile('image')) {
+            if ($imagePath && file_exists(public_path($imagePath))) {
+                @unlink(public_path($imagePath));
+            }
+
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('uploads/categories'), $imageName);
+            $imagePath = 'uploads/categories/' . $imageName;
+        }
+
+        $category->update([
+            'name' => $request->input('name'),
+            'image' => $imagePath,
+            'parent_id' => $request->input('parent_id')
+        ]);
+
+        return redirect()->back()->with('success', 'Category updated successfully.');
     }
 }
