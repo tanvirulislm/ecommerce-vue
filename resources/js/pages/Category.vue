@@ -1,12 +1,23 @@
 <script setup lang="ts">
 import Heading from '@/components/Heading.vue';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import { Search, SquarePen, Trash } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 const breadcrumbItems: BreadcrumbItem[] = [
@@ -38,6 +49,14 @@ const form = useForm({
 });
 const submit = () => {
     form.post(route('create-category'), {
+        onSuccess: () => {
+            successAlertMessage.value = 'Category created successfully!';
+            showSuccessAlert.value = true;
+
+            setTimeout(() => {
+                showSuccessAlert.value = false;
+            }, 3000);
+        },
         onFinish: () => {
             form.reset();
             isModalOpen.value = false;
@@ -51,11 +70,53 @@ const handleFile = (e: Event) => {
 watch(selectedParentId, (val) => {
     form.parent_id = val;
 });
+
+const isDeleteDialogOpen = ref(false);
+const categoryToDeleteId = ref(null);
+const showSuccessAlert = ref(false);
+const successAlertMessage = ref('');
+
+function openDeleteDialog(id) {
+    categoryToDeleteId.value = id;
+    isDeleteDialogOpen.value = true;
+}
+
+function handleDelete() {
+    if (!categoryToDeleteId.value) return;
+
+    router.delete(`/delete-category/${categoryToDeleteId.value}`, {
+        onSuccess: () => {
+            successAlertMessage.value = 'The category was deleted successfully.';
+            showSuccessAlert.value = true;
+
+            setTimeout(() => {
+                showSuccessAlert.value = false;
+            }, 3000);
+        },
+        onError: (errors) => {
+            alert('An error occurred.');
+            console.error(errors);
+        },
+        onFinish: () => {
+            isDeleteDialogOpen.value = false;
+            categoryToDeleteId.value = null;
+        },
+    });
+}
 </script>
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbItems">
         <Head title="Category" />
+        <div v-if="showSuccessAlert" class="fixed top-5 right-5 z-50 w-auto max-w-sm">
+            <Alert>
+                <SquareCheckBig class="h-4 w-4" />
+                <AlertTitle>Success!</AlertTitle>
+                <AlertDescription>
+                    {{ successAlertMessage }}
+                </AlertDescription>
+            </Alert>
+        </div>
         <div class="px-4 py-6">
             <Heading title="Category List" />
             <div class="flex justify-between">
@@ -78,15 +139,34 @@ watch(selectedParentId, (val) => {
                 :search-value="searchTerm"
                 :search-fields="searchFields"
             >
-                <template #item-image="{ image }">
-                    <img :src="image" alt="Category" class="ms-2 h-8 w-auto rounded-full" />
+                <template #item-image="{ image, name }">
+                    <img :src="image || 'https://placehold.co/150x150.png'" :alt="name" class="ms-2 h-8 w-auto rounded-full" />
                 </template>
-                <template #item-operation="">
-                    <Button size="sm" class="mr-2"><SquarePen class="h-4 w-4" /></Button>
-                    <Button size="sm" variant="destructive"><Trash class="h-4 w-4" /></Button>
+                <template #item-operation="item">
+                    <div class="flex items-center gap-2">
+                        <Button size="sm" class="mr-2"><SquarePen class="h-4 w-4" /></Button>
+                        <Button size="sm" @click="openDeleteDialog(item.id)" variant="destructive"><Trash class="h-4 w-4" /></Button>
+                    </div>
                 </template>
             </EasyDataTable>
-            <!-- Dialog -->
+
+            <!-- Alert Dialog -->
+            <AlertDialog :open="isDeleteDialogOpen" @update:open="isDeleteDialogOpen = $event">
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete this category and any associated data.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel @click="isDeleteDialogOpen = false">Cancel</AlertDialogCancel>
+
+                        <AlertDialogAction @click="handleDelete">Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+            <!-- Create Category Modal -->
             <Dialog :open="isModalOpen" @update:open="isModalOpen = false">
                 <DialogContent>
                     <DialogHeader>

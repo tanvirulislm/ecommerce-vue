@@ -10,7 +10,13 @@ class CategoryController extends Controller
 {
     public function Categorypage()
     {
-        $categories = Category::All();
+        // $categories = Category::All();
+        $categories = Category::with('parent')->get()->map(function ($category) {
+            if ($category->parent) {
+                $category->name = $category->parent->name . ' > ' . $category->name;
+            }
+            return $category;
+        });
         return Inertia::render('Category', [
             'categories' => $categories
         ]);
@@ -40,5 +46,16 @@ class CategoryController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Category created successfully.');
+    }
+
+    public function DeleteCategory($id)
+    {
+        $category = Category::findOrFail($id);
+        if ($category->image && file_exists(public_path($category->image))) {
+            @unlink(public_path($category->image));
+        }
+        // dd($category);
+        $category->delete();
+        return redirect()->back()->with('success', 'Category deleted successfully.');
     }
 }
