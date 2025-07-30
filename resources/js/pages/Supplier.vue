@@ -16,11 +16,9 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import { Search, SquarePen, Trash } from 'lucide-vue-next';
-import { ref } from 'vue';
-
-import { router, useForm } from '@inertiajs/vue3';
+import { ref, watch } from 'vue';
 
 // Breadcrumb items for navigation
 const breadcrumbItems: BreadcrumbItem[] = [
@@ -35,7 +33,11 @@ defineProps({
     parties: Array,
 });
 
-// Define the headers for the Easy Data Table
+// Reactive variables for success alert
+const showSuccessAlert = ref(false);
+const successAlertMessage = ref('');
+
+// For data table
 const headers = [
     { text: 'Name', value: 'name', sortable: true },
     { text: 'Phone', value: 'phone', sortable: true },
@@ -51,32 +53,34 @@ const searchFields = ['name', 'phone', 'email', 'city'];
 // Reactive variables for modal and form handling
 const isModalOpen = ref(false);
 
-// Reactive variables for success alert
-const showSuccessAlert = ref(false);
-const successAlertMessage = ref('');
-
 const form = useForm({
     name: '',
-    email: '',
     phone: '',
+    email: '',
     city: '',
     address: '',
     type: 'supplier',
     created_by: null,
 });
 
+watch(isModalOpen, (newVal) => {
+    if (!newVal) {
+        form.reset('name', 'phone', 'email', 'city', 'address', 'type', 'created_by');
+    }
+});
+
 const submit = () => {
     form.post(route('create-party'), {
         onSuccess: () => {
-            successAlertMessage.value = 'Party created successfully!';
+            successAlertMessage.value = 'Brand created successfully!';
             showSuccessAlert.value = true;
+
+            form.reset('name', 'phone', 'email', 'city', 'address', 'type', 'created_by');
+            isModalOpen.value = false;
 
             setTimeout(() => {
                 showSuccessAlert.value = false;
             }, 3000);
-        },
-        onFinish: () => {
-            form.reset('name', 'email', 'phone', 'city', 'address', 'type', 'created_by');
             isModalOpen.value = false;
         },
     });
@@ -117,7 +121,7 @@ function handleDelete() {
 // Edit functionality
 const isEditMode = ref(false);
 const editingId = ref(null);
-function editparty(item) {
+function editParty(item) {
     isEditMode.value = true;
     isModalOpen.value = true;
     editingId.value = item.id;
@@ -127,10 +131,10 @@ function editparty(item) {
     form.phone = item.phone;
     form.city = item.city;
     form.address = item.address;
-    form.type = 'Supplier';
     form.created_by = item.created_by;
+    isModalOpen.value = true;
 }
-function updateSupplier() {
+function updateParty() {
     form.post(`/update-party/${editingId.value}`, {
         forceFormData: true,
         onSuccess: () => {
@@ -171,7 +175,7 @@ function updateSupplier() {
                     <Input type="text" class="mt-1 block w-full pl-9" v-model="searchTerm" required placeholder="Search Supplier..." />
                 </div>
                 <div class="mb-2 flex justify-end">
-                    <Button @click="isModalOpen = true">Create Supplier</Button>
+                    <Button @click="isModalOpen = true">Create Brand</Button>
                 </div>
             </div>
             <!-- Easy Data Table -->
@@ -192,9 +196,9 @@ function updateSupplier() {
                     >
                 </template>
 
-                <template #item-operation="{ item }">
+                <template #item-operation="item">
                     <div class="flex items-center gap-2">
-                        <Button size="sm" class="mr-2" @click="editparty(item)">
+                        <Button size="sm" class="mr-2" @click="editParty(item)">
                             <SquarePen class="h-4 w-4" />
                         </Button>
                         <Button size="sm" @click="openDeleteDialog(item.id)" variant="destructive"><Trash class="h-4 w-4" /></Button>
@@ -208,7 +212,7 @@ function updateSupplier() {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This will permanently delete the supplier and all of its data. This action cannot be undone.
+                            This will permanently delete the brand and all of its data. This action cannot be undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -219,13 +223,13 @@ function updateSupplier() {
                 </AlertDialogContent>
             </AlertDialog>
 
-            <!-- Create and Update Supplier Modal -->
+            <!-- Create and Update Brand Modal -->
             <Dialog :open="isModalOpen" @update:open="isModalOpen = false">
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>{{ isEditMode ? 'Update Supplier' : 'Create Supplier' }}</DialogTitle>
                     </DialogHeader>
-                    <form @submit.prevent="isEditMode ? updateSupplier() : submit()" class="flex flex-col gap-6">
+                    <form @submit.prevent="isEditMode ? updateParty() : submit()" class="flex flex-col gap-6">
                         <div class="grid gap-6">
                             <Input type="text" v-model="form.name" placeholder="Supplier Name" />
                             <Input type="email" v-model="form.email" placeholder="Email" />

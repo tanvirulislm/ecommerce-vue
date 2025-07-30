@@ -46,5 +46,5 @@ Route::middleware(['auth', 'verified',])->group(function () {
     // All DELETE URLs
     Route::delete('/delete-category/{id}', [CategoryController::class, 'DeleteCategory'])->name('delete-category');
     Route::delete('/delete-brand/{id}', [BrandController::class, 'DeleteBrand'])->name('delete-brand');
-    Route::delete('/delete-party/{id}', [BrandController::class, 'DeleteParty'])->name('delete-party');
+    Route::delete('/delete-party/{id}', [PartyController::class, 'DeleteParty'])->name('delete-party');
 });

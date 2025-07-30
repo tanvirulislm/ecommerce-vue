@@ -18,7 +18,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { Search, SquarePen, Trash } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 // Breadcrumb items for navigation
 const breadcrumbItems: BreadcrumbItem[] = [
@@ -55,18 +55,24 @@ const form = useForm({
     image: null,
 });
 
+watch(isModalOpen, (newVal) => {
+    if (!newVal) {
+        form.reset('name', 'image');
+    }
+});
+
 const submit = () => {
     form.post(route('create-brand'), {
         onSuccess: () => {
             successAlertMessage.value = 'Brand created successfully!';
             showSuccessAlert.value = true;
 
+            form.reset('name', 'image');
+            isModalOpen.value = false;
+
             setTimeout(() => {
                 showSuccessAlert.value = false;
             }, 3000);
-        },
-        onFinish: () => {
-            form.reset('name', 'image');
             isModalOpen.value = false;
         },
     });

@@ -35,6 +35,7 @@ class PartyController extends Controller
             'created_by' => 'nullable|exists:users,id',
         ]);
 
+        // dd($request->all());
         Party::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
@@ -42,7 +43,7 @@ class PartyController extends Controller
             'city' => $request->input('city'),
             'address' => $request->input('address'),
             'type' => $request->input('type'),
-            'created_by' => $request->input('created_by'),
+            'created_by' => $request->input('created_by')
         ]);
 
         return redirect()->back()->with('success', 'Party created successfully.');
@@ -76,7 +77,7 @@ class PartyController extends Controller
             'city' => $request->input('city'),
             'address' => $request->input('address'),
             'type' => $request->input('type'),
-            'created_by' => $request->input('created_by'),
+            'created_by' => $request->input('created_by')
         ]);
 
         return redirect()->back()->with('success', 'Party updated successfully.');

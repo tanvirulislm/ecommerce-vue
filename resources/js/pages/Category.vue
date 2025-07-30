@@ -59,18 +59,24 @@ const form = useForm({
     parent_id: null,
 });
 
+watch(isModalOpen, (newVal) => {
+    if (!newVal) {
+        form.reset('name', 'image', 'parent_id');
+    }
+});
+
 const submit = () => {
     form.post(route('create-category'), {
         onSuccess: () => {
             successAlertMessage.value = 'Category created successfully!';
             showSuccessAlert.value = true;
 
+            form.reset();
+            isModalOpen.value = false;
+
             setTimeout(() => {
                 showSuccessAlert.value = false;
             }, 3000);
-        },
-        onFinish: () => {
-            form.reset();
             isModalOpen.value = false;
         },
     });
