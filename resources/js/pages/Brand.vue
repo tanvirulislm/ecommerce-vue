@@ -225,3 +225,20 @@ function updateBrand() {
         </div>
     </AppLayout>
 </template>
+<style scoped>
+.customize-table {
+    --easy-table-header-font-size: 15px;
+    --easy-table-body-row-font-size: 14px;
+}
+
+::v-deep(.buttons-pagination .item.button.active) {
+    background-color: #2e2e2e !important;
+    border-color: #2e2e2e !important;
+    color: #ffffff !important;
+}
+::v-deep(.select-items .selected) {
+    background-color: #2e2e2e !important;
+    border-color: #2e2e2e !important;
+    color: #ffffff !important;
+}
+</style>

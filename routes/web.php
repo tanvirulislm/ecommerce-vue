@@ -40,7 +40,11 @@ Route::middleware(['auth', 'verified',])->group(function () {
     Route::post('/brand', [BrandController::class, 'CreateBrand'])->name('create-brand');
     Route::post('/update-brand/{id}', [BrandController::class, 'UpdateBrand'])->name('update-brand');
 
+    Route::post('/party', [PartyController::class, 'CreateParty'])->name('create-party');
+    Route::post('/update-party/{id}', [PartyController::class, 'UpdateParty'])->name('update-party');
+
     // All DELETE URLs
     Route::delete('/delete-category/{id}', [CategoryController::class, 'DeleteCategory'])->name('delete-category');
     Route::delete('/delete-brand/{id}', [BrandController::class, 'DeleteBrand'])->name('delete-brand');
+    Route::delete('/delete-party/{id}', [BrandController::class, 'DeleteParty'])->name('delete-party');
 });
