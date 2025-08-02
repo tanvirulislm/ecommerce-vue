@@ -66,6 +66,8 @@ const form = useForm({
 watch(isModalOpen, (newVal) => {
     if (!newVal) {
         form.reset('name', 'phone', 'email', 'city', 'address', 'type', 'created_by');
+        isEditMode.value = false;
+        editingId.value = null;
     }
 });
 

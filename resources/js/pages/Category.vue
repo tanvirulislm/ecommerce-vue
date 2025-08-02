@@ -89,6 +89,8 @@ const handleFile = (e: Event) => {
 
 watch(selectedParentId, (val) => {
     form.parent_id = val;
+    isEditMode.value = false;
+    editingId.value = null;
 });
 
 // Reactive variables for delete dialog and success alert

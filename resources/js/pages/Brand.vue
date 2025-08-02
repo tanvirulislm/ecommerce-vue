@@ -58,6 +58,8 @@ const form = useForm({
 watch(isModalOpen, (newVal) => {
     if (!newVal) {
         form.reset('name', 'image');
+        isEditMode.value = false;
+        editingId.value = null;
     }
 });
 

@@ -66,6 +66,8 @@ const form = useForm({
 watch(isModalOpen, (newVal) => {
     if (!newVal) {
         form.reset('name', 'phone', 'email', 'city', 'address', 'type', 'created_by');
+        isEditMode.value = false;
+        editingId.value = null;
     }
 });
 
@@ -175,7 +177,7 @@ function updateParty() {
                     <Input type="text" class="mt-1 block w-full pl-9" v-model="searchTerm" required placeholder="Search Supplier..." />
                 </div>
                 <div class="mb-2 flex justify-end">
-                    <Button @click="isModalOpen = true">Create Brand</Button>
+                    <Button @click="isModalOpen = true">Create Supplier</Button>
                 </div>
             </div>
             <!-- Easy Data Table -->
