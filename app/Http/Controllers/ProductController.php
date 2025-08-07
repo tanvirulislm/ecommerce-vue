@@ -71,4 +71,9 @@ class ProductController extends Controller
 
         return redirect()->back()->with('success', 'Product created successfully.');
     }
+
+    public function CreateProductPage()
+    {
+        return Inertia::render('CreateProduct');
+    }
 }

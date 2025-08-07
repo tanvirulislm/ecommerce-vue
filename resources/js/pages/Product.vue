@@ -54,7 +54,7 @@ const selectedItem = ref<any | null>(null);
                     <Input type="text" class="mt-1 block w-full pl-9" v-model="searchTerm" required placeholder="Search Product..." />
                 </div>
                 <div class="mb-2 flex justify-end">
-                    <Button>Create Product</Button>
+                    <Button href="/product/create">Create Product</Button>
                 </div>
             </div>
 
