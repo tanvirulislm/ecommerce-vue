@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -9,165 +8,263 @@ import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
+
 const breadcrumbItems: BreadcrumbItem[] = [
+    {
+        title: 'Product',
+        href: '/product',
+    },
     {
         title: 'Create Product',
         href: '/create-product',
     },
 ];
+
+const { categories, brands, allAttributes } = usePage().props;
+
 const form = useForm({
     title: '',
     short_des: '',
     long_des: '',
-    price: '',
-    discount: false,
-    discount_price: '',
-    stock: '',
-    remark: '',
     category_id: '',
     brand_id: '',
-    image: null,
-    images: [],
+    weight: '',
+    remark: '',
+    barcode: '',
+    meta_title: '',
+    meta_description: '',
+    status: 'active',
+    attributes: [],
+    variations: [],
+    cover_image: null,
 });
-const { categories, brands } = usePage().props;
+
+// --- Attribute Management ---
+function addAttribute() {
+    form.attributes.push({ name: '', options: '' });
+}
+
+function removeAttribute(index) {
+    form.attributes.splice(index, 1);
+}
+
+// --- Variation Generation Logic ---
+function generateVariations() {
+    if (!form.attributes.length) {
+        // If no attributes, create one simple variation.
+        form.variations = [{ price: '', stock: '', sku: '', options: {}, images: [] }];
+        return;
+    }
+
+    // Filter out attributes with no options
+    const attributesWithOptions = form.attributes.filter((attr) => attr.options.trim() !== '');
+    if (!attributesWithOptions.length) {
+        form.variations = [{ price: '', stock: '', sku: '', options: {}, images: [] }];
+        return;
+    }
+
+    // The famous Cartesian Product algorithm to get all combinations
+    const arrays = attributesWithOptions.map((attr) => attr.options.split(',').map((s) => s.trim()));
+    const cartesian = arrays.reduce((a, b) => a.flatMap((d) => b.map((e) => [d, e].flat())), [[]]);
+
+    // Create the variation objects from the combinations
+    form.variations = cartesian.map((combination) => {
+        const options = {};
+        combination.forEach((optionValue, index) => {
+            const attributeName = attributesWithOptions[index].name;
+            options[attributeName] = optionValue;
+        });
+        return {
+            price: '',
+            stock: '',
+            sku: '',
+            options: options,
+            images: [],
+        };
+    });
+}
+
+function handleVariationImagesUpload(event, variation) {
+    // Assign uploaded files directly to the specific variation's 'images' array
+    variation.images = Array.from(event.target.files);
+}
+
+// --- Form Submission ---
 const submit = () => {
-    form.post(route('product'), {
+    form.post(route('product.store'), {
+        forceFormData: true,
         onSuccess: () => {
-            // route to /product
-            window.location.href = '/product';
+            form.reset();
         },
     });
 };
-
-function handleImagesUpload(e) {
-    form.value.images = Array.from(e.target.files);
-}
-
-function handleMainImageUpload(e) {
-    form.value.image = e.target.files[0];
-}
 </script>
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbItems">
         <Head title="Create Product" />
         <div class="px-4 py-6">
-            <form @submit.prevent="submit" class="mx-auto flex max-w-2xl flex-col gap-6 rounded-2xl bg-white p-6 shadow-md">
-                <!-- Title -->
+            <form @submit.prevent="submit" class="mx-auto flex max-w-4xl flex-col gap-8 rounded-2xl bg-white p-6 shadow-md">
+                <div class="space-y-6">
+                    <h2 class="text-xl font-semibold">Product Information</h2>
+                    <div class="grid gap-2">
+                        <Label for="title">Product Name</Label>
+                        <Input id="title" type="text" v-model="form.title" placeholder="e.g., Premium Cotton T-Shirt" required />
+                        <InputError :message="form.errors.title" />
+                    </div>
+                    <div class="grid grid-cols-1 justify-between gap-6 md:grid-cols-4">
+                        <div class="grid gap-2">
+                            <Label for="category_id">Category</Label>
+                            <Select v-model="form.category_id">
+                                <SelectTrigger class="w-full"><SelectValue placeholder="Select a category" /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem v-for="category in categories" :key="category.id" :value="category.id">
+                                        {{ category.name }}
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <InputError :message="form.errors.category_id" />
+                        </div>
+                        <div class="grid gap-2">
+                            <Label for="brand_id">Brand</Label>
+                            <Select v-model="form.brand_id">
+                                <SelectTrigger class="w-full"><SelectValue placeholder="Select a brand" /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem v-for="brand in brands" :key="brand.id" :value="brand.id">
+                                        {{ brand.name }}
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <InputError :message="form.errors.brand_id" />
+                        </div>
+                        <div class="grid gap-2">
+                            <Label for="status">Status</Label>
+                            <Select v-model="form.status">
+                                <SelectTrigger class="w-full"><SelectValue placeholder="Select status" /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="active">Active</SelectItem>
+                                    <SelectItem value="draft">Draft</SelectItem>
+                                    <SelectItem value="archived">Archived</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <InputError :message="form.errors.status" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <Label for="remark">Remark</Label>
+                            <Select v-model="form.remark">
+                                <SelectTrigger class="w-full"><SelectValue placeholder="Select remark" /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Popular">Popular</SelectItem>
+                                    <SelectItem value="New">New</SelectItem>
+                                    <SelectItem value="Top">Top</SelectItem>
+                                    <SelectItem value="Special">Special</SelectItem>
+                                    <SelectItem value="Trending">Trending</SelectItem>
+                                    <SelectItem value="Regular">Regular</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <InputError :message="form.errors.remark" />
+                        </div>
+                    </div>
+                    <div class="grid gap-2">
+                        <Label for="short_des">Short Description</Label>
+                        <Input
+                            id="short_des"
+                            placeholder="e.g., A comfortable and stylish t-shirt for everyday wear"
+                            type="text"
+                            v-model="form.short_des"
+                        />
+                        <InputError :message="form.errors.short_des" />
+                    </div>
+                    <div class="grid gap-2">
+                        <Label for="long_des">Long Description</Label>
+                        <Textarea
+                            id="long_des"
+                            placeholder="e.g., This premium cotton t-shirt is made from high-quality materials..."
+                            v-model="form.long_des"
+                            rows="4"
+                        />
+                        <InputError :message="form.errors.long_des" />
+                    </div>
+                </div>
                 <div class="grid gap-2">
-                    <Label for="title">Product Name</Label>
-                    <Input id="title" type="text" v-model="form.title" placeholder="Honey Nut" required autofocus />
-                    <InputError :message="form.errors.title" />
+                    <Label for="cover_image">Cover Image</Label>
+                    <Input id="cover_image" type="file" accept="image/*" @change="(e) => (form.cover_image = e.target.files[0])" />
+                    <InputError :message="form.errors.cover_image" />
                 </div>
 
-                <!-- Short Description -->
-                <div class="grid gap-2">
-                    <Label for="short_des">Short Description</Label>
-                    <Input id="short_des" type="text" v-model="form.short_des" placeholder="A short and sweet product intro" required />
-                    <InputError :message="form.errors.short_des" />
+                <div class="space-y-4 rounded-lg border p-4">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-xl font-semibold">Product Attributes</h2>
+                        <Button type="button" @click="addAttribute">Add Attribute</Button>
+                    </div>
+                    <p class="text-sm text-gray-500">Define attributes like Color or Size. Use commas to separate options (e.g., Red,Green,Blue).</p>
+
+                    <div v-for="(attribute, index) in form.attributes" :key="index" class="flex items-end gap-4">
+                        <div class="grid flex-grow gap-2">
+                            <Label>Attribute Name</Label>
+                            <Input type="text" v-model="attribute.name" placeholder="e.g., Color" />
+                        </div>
+                        <div class="grid flex-grow gap-2">
+                            <Label>Options (comma separated)</Label>
+                            <Input type="text" v-model="attribute.options" placeholder="e.g., Red, Blue, Green" />
+                        </div>
+                        <Button type="button" variant="destructive" @click="removeAttribute(index)">Remove</Button>
+                    </div>
                 </div>
 
-                <!-- Long Description -->
-                <div class="grid gap-2">
-                    <Label for="long_des">Long Description</Label>
-                    <Textarea id="long_des" v-model="form.long_des" placeholder="Detailed product information..." rows="4" required />
-                    <InputError :message="form.errors.long_des" />
+                <div class="flex justify-center">
+                    <Button type="button" @click="generateVariations" class="bg-indigo-600 text-white hover:bg-indigo-700">
+                        Generate Product Variations
+                    </Button>
+                </div>
+                <InputError :message="form.errors.variations" class="text-center" />
+
+                <div v-if="form.variations.length > 0" class="space-y-6">
+                    <h2 class="text-xl font-semibold">Generated Variations</h2>
+                    <div v-for="(variation, index) in form.variations" :key="index" class="space-y-4 rounded-lg border p-4">
+                        <h3 class="font-medium text-gray-800">
+                            Variation {{ index + 1 }}
+                            <span v-if="Object.keys(variation.options).length" class="text-sm text-indigo-600">
+                                ({{
+                                    Object.entries(variation.options)
+                                        .map(([key, val]) => `${key}: ${val}`)
+                                        .join(' / ')
+                                }})
+                            </span>
+                        </h3>
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                            <div class="grid gap-2">
+                                <Label :for="`price_${index}`">Price</Label>
+                                <Input :id="`price_${index}`" type="number" v-model="variation.price" placeholder="Price" required />
+                                <InputError :message="form.errors[`variations.${index}.price`]" />
+                            </div>
+                            <div class="grid gap-2">
+                                <Label :for="`stock_${index}`">Stock</Label>
+                                <Input :id="`stock_${index}`" type="number" v-model="variation.stock" placeholder="Stock" required />
+                                <InputError :message="form.errors[`variations.${index}.stock`]" />
+                            </div>
+                            <div class="grid gap-2">
+                                <Label :for="`sku_${index}`">SKU</Label>
+                                <Input :id="`sku_${index}`" type="text" v-model="variation.sku" placeholder="SKU (optional)" />
+                                <InputError :message="form.errors[`variations.${index}.sku`]" />
+                            </div>
+                            <div class="grid gap-2">
+                                <Label :for="`images_${index}`">Images</Label>
+                                <Input
+                                    :id="`images_${index}`"
+                                    type="file"
+                                    multiple
+                                    accept="image/*"
+                                    @change="handleVariationImagesUpload($event, variation)"
+                                />
+                                <InputError :message="form.errors[`variations.${index}.images`]" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Price -->
-                <div class="grid gap-2">
-                    <Label for="price">Price</Label>
-                    <Input id="price" type="number" v-model="form.price" placeholder="100" required />
-                    <InputError :message="form.errors.price" />
-                </div>
-
-                <!-- Discount -->
-                <div class="flex items-center gap-3">
-                    <Checkbox id="discount" v-model="form.discount" />
-                    <Label for="discount" class="cursor-pointer">Has Discount?</Label>
-                </div>
-
-                <!-- Discount Price -->
-                <div v-if="form.discount" class="grid gap-2">
-                    <Label for="discount_price">Discount Price</Label>
-                    <Input id="discount_price" type="number" v-model="form.discount_price" placeholder="80" />
-                    <InputError :message="form.errors.discount_price" />
-                </div>
-
-                <!-- Stock -->
-                <div class="grid gap-2">
-                    <Label for="stock">Stock Quantity</Label>
-                    <Input id="stock" type="number" v-model="form.stock" placeholder="0" />
-                    <InputError :message="form.errors.stock" />
-                </div>
-
-                <!-- Remark -->
-                <div class="grid gap-2">
-                    <Label for="remark">Remark</Label>
-                    <Select v-model="form.remark">
-                        <SelectTrigger class="w-full">
-                            <SelectValue placeholder="Select a remark" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="Popular">Popular</SelectItem>
-                            <SelectItem value="New">New</SelectItem>
-                            <SelectItem value="Top">Top</SelectItem>
-                            <SelectItem value="Special">Special</SelectItem>
-                            <SelectItem value="Trending">Trending</SelectItem>
-                            <SelectItem value="Regular">Regular</SelectItem>
-                        </SelectContent>
-                    </Select>
-                    <InputError :message="form.errors.remark" />
-                </div>
-
-                <!-- Category -->
-                <div class="grid gap-2">
-                    <Label for="category_id">Category</Label>
-                    <Select v-model="form.category_id">
-                        <SelectTrigger class="w-full">
-                            <SelectValue placeholder="Select a category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem v-for="category in categories" :key="category.id" :value="category.id">
-                                {{ category.name }}
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
-                    <InputError :message="form.errors.category_id" />
-                </div>
-
-                <!-- Brand -->
-                <div class="grid gap-2">
-                    <Label for="brand_id">Brand</Label>
-                    <Select v-model="form.brand_id">
-                        <SelectTrigger class="w-full">
-                            <SelectValue placeholder="Select a brand" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem v-for="brand in brands" :key="brand.id" :value="brand.id">
-                                {{ brand.name }}
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
-                    <InputError :message="form.errors.brand_id" />
-                </div>
-
-                <!-- Image -->
-                <div class="grid gap-2">
-                    <Label for="image">Main Image</Label>
-                    <Input id="image" type="file" accept="image/*" @change="handleMainImageUpload" />
-                    <InputError :message="form.errors.image" />
-                </div>
-
-                <!-- Images -->
-                <div class="grid gap-2">
-                    <Label for="images">Additional Images</Label>
-                    <Input id="images" type="file" multiple accept="image/*" @change="handleImagesUpload" />
-                    <InputError :message="form.errors.images" />
-                </div>
-
-                <!-- Submit -->
-                <Button type="submit" class="w-full"> Save Product </Button>
+                <Button type="submit" :disabled="form.processing" class="w-full py-3"> Save Product </Button>
             </form>
         </div>
     </AppLayout>

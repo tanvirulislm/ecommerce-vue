@@ -80,42 +80,6 @@ const selectedItem = ref<any | null>(null);
                     </div>
                 </template>
             </EasyDataTable>
-            <!-- <Dialog :open="isModalOpen" @update:open="isModalOpen = false">
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>{{ selectedItem?.title }}</DialogTitle>
-                        <DialogDescription> {{ selectedItem?.long_des }} </DialogDescription>
-                    </DialogHeader>
-
-                    <div v-if="selectedItem" class="grid gap-4 py-4">
-                        <div class="flex items-center">
-                            <img :src="selectedItem.image" alt="Product" class="h-20 w-20 rounded-md object-cover" />
-                        </div>
-                        <p><strong>Product Price:</strong> $ {{ selectedItem.price }}</p>
-                        <p><strong>Discount:</strong> $ {{ selectedItem.discount_price }}</p>
-                        <p v-for="(option, index) in selectedItem.variations" :key="index">
-                            <strong>{{ option.name }}: {{ option.option }}</strong>
-                        </p>
-                        <p><strong>Available Stock:</strong> {{ selectedItem.stock }} units</p>
-                        <img
-                            v-for="(option, index) in selectedItem.variations"
-                            :key="index"
-                            :src="option.image"
-                            alt="Variation Image"
-                            class="h-10 w-10 rounded-md object-cover"
-                        />
-                        <p><strong>Product Category:</strong> {{ selectedItem.category.name }}</p>
-                        <p><strong>Brand:</strong> {{ selectedItem.brand.brandName }}</p>
-                        <p><strong>Remark:</strong> {{ selectedItem.remark }}</p>
-                    </div>
-
-                    <DialogFooter>
-                        <Button>Make Order</Button>
-                        <Button @click="isModalOpen = false">Close</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog> -->
-
             <template>
                 <ProductDetailDialog v-model:open="isModalOpen" :item="selectedItem" />
             </template>

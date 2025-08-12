@@ -17,11 +17,10 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CategorySeeder::class,
             BrandSeeder::class,
-            ProductSeeder::class,
-            VariationSeeder::class,
+            // ProductSeeder::class,
             PartySeeder::class,
-            InvoiceSeeder::class,
-            InvoiceItemSeeder::class,
+            // InvoiceSeeder::class,
+            // InvoiceItemSeeder::class,
         ]);
     }
 }

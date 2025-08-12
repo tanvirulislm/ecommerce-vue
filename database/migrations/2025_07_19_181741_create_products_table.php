@@ -14,20 +14,20 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('short_des');
-            $table->string('long_des');
-            $table->string('price');
-            $table->boolean('discount')->nullable();
-            $table->string('discount_price')->nullable();
-            $table->string('image')->nullable();
-            $table->json('images')->nullable();
-            $table->string('stock')->default(0);
-            $table->enum('remark', ['Popular', 'New', 'Top', 'Special', 'Trending', 'Regular']);
+            $table->text('short_des')->nullable();
+            $table->text('long_des')->nullable();
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('brand_id');
-            $table->foreign('category_id')->references('id')->on('categories')->restrictOnDelete()->cascadeOnUpdate();
-            $table->foreign('brand_id')->references('id')->on('brands')->restrictOnDelete()->cascadeOnUpdate();
+            $table->enum('remark', ['Popular', 'New', 'Top', 'Special', 'Trending', 'Regular'])->default('Regular');
+            $table->string('cover_image')->nullable();
+            $table->decimal('weight', 8, 3)->nullable();
+            $table->string('barcode')->nullable();
+            $table->string('meta_title')->nullable();
+            $table->text('meta_description')->nullable();
+            $table->enum('status', ['active', 'draft', 'archived'])->default('active');
             $table->timestamps();
+            $table->foreign('category_id')->references('id')->on('categories')->restrictOnDelete();
+            $table->foreign('brand_id')->references('id')->on('brands')->restrictOnDelete();
         });
     }
 
