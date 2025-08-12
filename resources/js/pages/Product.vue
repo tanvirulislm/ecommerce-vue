@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { Eye, Search, SquarePen, Trash } from 'lucide-vue-next';
 import { ref } from 'vue';
 const breadcrumbItems: BreadcrumbItem[] = [
@@ -54,7 +54,7 @@ const selectedItem = ref<any | null>(null);
                     <Input type="text" class="mt-1 block w-full pl-9" v-model="searchTerm" required placeholder="Search Product..." />
                 </div>
                 <div class="mb-2 flex justify-end">
-                    <Button href="/product/create">Create Product</Button>
+                    <Button as-child><Link href="/create-product">Create Product</Link></Button>
                 </div>
             </div>
 

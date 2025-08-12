@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('short_des');
             $table->string('long_des');
             $table->string('price');
-            $table->boolean('discount');
-            $table->string('discount_price');
-            $table->string('image');
+            $table->boolean('discount')->nullable();
+            $table->string('discount_price')->nullable();
+            $table->string('image')->nullable();
             $table->json('images')->nullable();
             $table->string('stock')->default(0);
             $table->enum('remark', ['Popular', 'New', 'Top', 'Special', 'Trending', 'Regular']);

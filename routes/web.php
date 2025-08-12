@@ -37,6 +37,7 @@ Route::middleware(['auth', 'verified',])->group(function () {
     // All POST URLs
     Route::post('/category', [CategoryController::class, 'CreateCategory'])->name('create-category');
     Route::post('/update-category/{id}', [CategoryController::class, 'UpdateCategory'])->name('update-category');
+    Route::post('/product', [ProductController::class, 'CreateProduct'])->name('create-product');
 
     Route::post('/brand', [BrandController::class, 'CreateBrand'])->name('create-brand');
     Route::post('/update-brand/{id}', [BrandController::class, 'UpdateBrand'])->name('update-brand');

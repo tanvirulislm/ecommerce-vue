@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use App\Models\Brand;
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -53,7 +55,6 @@ class ProductController extends Controller
                 $images[] = 'uploads/products/' . $imageName;
             }
         }
-
         Product::create([
             'title' => $request->input('title'),
             'short_des' => $request->input('short_des'),
@@ -74,6 +75,12 @@ class ProductController extends Controller
 
     public function CreateProductPage()
     {
-        return Inertia::render('CreateProduct');
+        $categories = Category::select('id', 'name')->get();
+        $brands = Brand::select('id', 'name')->get();
+
+        return Inertia::render('CreateProduct', [
+            'categories' => $categories,
+            'brands' => $brands,
+        ]);
     }
 }
