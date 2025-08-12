@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Brand;
+
 use App\Models\Product;
-use App\Models\Category;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -13,34 +12,43 @@ class ProductSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
+    public function run()
     {
-        $remarks = ['Popular', 'New', 'Top', 'Special', 'Trending', 'Regular'];
-
-        for ($i = 0; $i < 30; $i++) {
-            $title = fake()->unique()->words(rand(2, 4), true);
-            $price = fake()->numberBetween(500, 5000);
-            $stock = fake()->numberBetween(50, 500);
-            $discount = fake()->boolean(60) ? fake()->numberBetween(5, 30) : 0;
-            $discountPrice = $discount ? round($price - ($price * $discount / 100)) : $price;
-
-            Product::create([
-                'title'           => ucfirst($title),
-                'short_des'       => fake()->sentence(10),
-                'long_des'        => fake()->paragraph(2),
-                'price'           => $price,
-                'discount'        => $discount,
-                'discount_price'  => $discountPrice,
-                'image'           => 'https://placehold.co/300x300.png?text=' . urlencode($title),
-                'images'          => json_encode([
-                    'https://placehold.co/300x300.png?text=' . urlencode($title) . '+1',
-                    'https://placehold.co/300x300.png?text=' . urlencode($title) . '+2',
-                ]),
-                'stock'           => $stock,
-                'remark'          => $remarks[array_rand($remarks)],
-                'category_id'     => Category::inRandomOrder()->first()->id,
-                'brand_id'        => Brand::inRandomOrder()->first()->id,
+        for ($i = 1; $i <= 25; $i++) {
+            $product = Product::create([
+                'title' => "Product $i",
+                'short_des' => "Short description for product $i",
+                'long_des' => "This is a longer description for product $i. Great product!",
+                'category_id' => rand(1, 5),
+                'brand_id' => rand(1, 5),
+                'remark' => 'Regular',
+                'cover_image' => "https://placehold.co/600x400?text=Product+$i",
+                'weight' => rand(100, 1000),
+                'barcode' => 'BARCODE' . str_pad($i, 5, '0', STR_PAD_LEFT),
+                'meta_title' => "Meta title for product $i",
+                'meta_description' => "Meta description for product $i",
+                'status' => 'active',
             ]);
+
+            // Create 2 variations per product
+            for ($j = 1; $j <= 2; $j++) {
+                $variation = $product->variations()->create([
+                    'sku' => "SKU{$i}-{$j}",
+                    'price' => rand(1000, 5000),
+                    'discount_price' => rand(500, 999),
+                    'stock' => rand(10, 100),
+                ]);
+
+
+                $images = [
+                    "https://placehold.co/200x200?text=Prod{$i}+Var{$j}+Img1",
+                    "https://placehold.co/200x200?text=Prod{$i}+Var{$j}+Img2",
+                ];
+
+                foreach ($images as $imgUrl) {
+                    $variation->images()->create(['images' => $imgUrl]);
+                }
+            }
         }
     }
 }

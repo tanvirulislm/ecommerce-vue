@@ -16,7 +16,7 @@ class ProductController extends Controller
 {
     public function ProductPage()
     {
-        $product = Product::with(['category', 'brand', 'variations'])
+        $product = Product::with(['category', 'brand', 'variations', 'variations.options', 'variations.images'])
             ->get();
         return Inertia::render('Product', [
             'product' => $product,
@@ -52,7 +52,7 @@ class ProductController extends Controller
                 'category_id' => $request->category_id,
                 'brand_id' => $request->brand_id,
                 'remark' => $request->remark ?? null,
-                'cover_image' => $request->file('cover_image')?->store('products'),
+                'cover_image' => $request->file('cover_image')?->store('images/products', 'public'),
                 'weight' => $request->weight,
                 'barcode' => $request->barcode,
                 'meta_title' => $request->meta_title,
@@ -78,7 +78,7 @@ class ProductController extends Controller
 
                 if ($request->hasFile("variations.$index.images")) {
                     foreach ($request->file("variations.$index.images") as $imgFile) {
-                        $path = $imgFile->store('variation_images');
+                        $path = $imgFile->store('images/variation_images', 'public');
                         $variation->images()->create(['images' => $path]);
                     }
                 }

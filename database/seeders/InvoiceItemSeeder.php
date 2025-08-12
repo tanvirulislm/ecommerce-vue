@@ -2,11 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Invoice;
-use App\Models\Product;
-use App\Models\Variation;
-use App\Models\InvoiceItem;
+
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class InvoiceItemSeeder extends Seeder
@@ -16,33 +14,26 @@ class InvoiceItemSeeder extends Seeder
      */
     public function run()
     {
-        $invoices = Invoice::all();
+        // Assuming you have invoices and product_variations already seeded
+        $invoiceIds = DB::table('invoices')->pluck('id')->toArray();
+        $variationIds = DB::table('product_variations')->pluck('id')->toArray();
 
-        foreach ($invoices as $invoice) {
-            $total = 0;
+        // Generate 50 random invoice items
+        for ($i = 0; $i < 50; $i++) {
+            $invoiceId = $invoiceIds[array_rand($invoiceIds)];
+            $variationId = $variationIds[array_rand($variationIds)];
+            $quantity = rand(1, 10);
+            $unitPrice = rand(100, 1000);
+            $subtotal = $quantity * $unitPrice;
 
-            foreach (range(1, rand(1, 4)) as $i) {
-                $product = Product::inRandomOrder()->first();
-                $variation = Variation::where('product_id', $product->id)->inRandomOrder()->first();
-
-                $quantity = rand(1, 5);
-                $unitPrice = $variation?->price ?? $product->price ?? rand(100, 500);
-                $subtotal = $unitPrice * $quantity;
-
-                InvoiceItem::create([
-                    'invoice_id' => $invoice->id,
-                    'product_id' => $product->id,
-                    'variation_id' => $variation?->id,
-                    'quantity' => $quantity,
-                    'unit_price' => $unitPrice,
-                    'subtotal' => $subtotal,
-                ]);
-
-                $total += $subtotal;
-            }
-
-            $invoice->update([
-                'total_amount' => $total
+            DB::table('invoice_items')->insert([
+                'invoice_id' => $invoiceId,
+                'product_variation_id' => $variationId,
+                'quantity' => $quantity,
+                'unit_price' => $unitPrice,
+                'subtotal' => $subtotal,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
         }
     }

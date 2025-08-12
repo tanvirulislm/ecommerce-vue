@@ -22,8 +22,6 @@ defineProps({
 const headers = [
     { text: 'Product Name', value: 'title', sortable: true },
     { text: 'Image', value: 'image' },
-    { text: 'Price', value: 'price', sortable: true },
-    { text: 'Stock', value: 'stock', sortable: true },
     { text: 'Remark', value: 'remark', sortable: true },
     { text: 'Category', value: 'category.name', sortable: true },
     { text: 'Brand', value: 'brand.name', sortable: true },
