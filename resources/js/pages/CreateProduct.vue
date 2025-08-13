@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import InputError from '@/components/InputError.vue';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 const breadcrumbItems: BreadcrumbItem[] = [
     {
@@ -89,12 +91,23 @@ function handleVariationImagesUpload(event, variation) {
     variation.images = Array.from(event.target.files);
 }
 
+// Reactive variables for success alert
+const showSuccessAlert = ref(false);
+const successAlertMessage = ref('');
+
 // --- Form Submission ---
 const submit = () => {
     form.post(route('product.store'), {
         forceFormData: true,
         onSuccess: () => {
+            successAlertMessage.value = 'Pruduct created successfully!';
+            showSuccessAlert.value = true;
+
             form.reset();
+
+            setTimeout(() => {
+                showSuccessAlert.value = false;
+            }, 3000);
         },
     });
 };
@@ -103,6 +116,18 @@ const submit = () => {
 <template>
     <AppLayout :breadcrumbs="breadcrumbItems">
         <Head title="Create Product" />
+
+        <!-- Success Alert -->
+        <div v-if="showSuccessAlert" class="fixed top-5 right-5 z-50 w-auto max-w-sm">
+            <Alert>
+                <!-- <SquareCheckBig class="h-4 w-4" /> -->
+                <AlertTitle>Success!</AlertTitle>
+                <AlertDescription>
+                    {{ successAlertMessage }}
+                </AlertDescription>
+            </Alert>
+        </div>
+
         <div class="px-4 py-6">
             <form @submit.prevent="submit" class="mx-auto flex max-w-4xl flex-col gap-8 rounded-2xl bg-white p-6 shadow-md">
                 <div class="space-y-6">
