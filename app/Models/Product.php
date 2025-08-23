@@ -8,10 +8,6 @@ class Product extends Model
 {
     protected $guarded = [];
 
-    protected $casts = [
-        'images' => 'array',
-    ];
-
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -24,11 +20,21 @@ class Product extends Model
 
     public function variations()
     {
-        return $this->hasMany(ProductVariation::class);
+        return $this->belongsToMany(Variation::class, 'product_variation_settings');
     }
 
-    public function invoice_items()
+    public function variationOptions()
     {
-        return $this->hasMany(InvoiceItem::class);
+        return $this->belongsToMany(VariationOption::class, 'product_variation_options');
+    }
+
+    public function combinations()
+    {
+        return $this->hasMany(ProductVariationCombination::class);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(Image::class);
     }
 }

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ProductVariationOption extends Model
+class CombinationOption extends Model
 {
     //
 }

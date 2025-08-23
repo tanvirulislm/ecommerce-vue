@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attribute_options', function (Blueprint $table) {
+        Schema::create('variations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('attribute_id');
-            $table->string('value');
+            $table->string('name')->unique(); // e.g. "Color", "Size"
             $table->timestamps();
-            $table->foreign('attribute_id')->references('id')->on('attributes')->cascadeOnDelete();
-            $table->unique(['attribute_id', 'value']);
         });
     }
 
@@ -26,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attribute_options');
+        Schema::dropIfExists('variations');
     }
 };

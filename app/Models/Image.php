@@ -8,8 +8,13 @@ class Image extends Model
 {
     protected $guarded = [];
 
-    public function productVariation()
+    public function product()
     {
-        return $this->belongsTo(ProductVariation::class);
+        return $this->belongsTo(Product::class);
+    }
+
+    public function combination()
+    {
+        return $this->belongsTo(ProductVariationCombination::class, 'product_variation_combination_id');
     }
 }
